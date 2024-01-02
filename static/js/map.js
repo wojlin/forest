@@ -530,10 +530,26 @@ function applyFilters()
 {
     console.log("filters applied!");
 
+    let filtersDict = {}
+
     for(let i = 0; i < filtersList.length; i++)
     {
-        console.log(filtersList[i]);
+        let checkbox = filtersList[i];
+        if(!checkbox.checked)
+        {
+            console.log(checkbox.id);
+            let name = checkbox.id.toString().split('-');
+
+            if(!name[0] in filtersDict)
+            {
+                filtersDict[name[0]] = [];
+            }
+
+            filtersDict[name[0]].push(name[1]);
+        }
     }
+
+    console.log(filtersDict)
 }
 
 function drawFilters(filters)
@@ -614,7 +630,7 @@ function drawFilters(filters)
             let check = document.createElement("input");
             check.value = entryValue;
             check.type="checkbox";
-            check.id=value;
+            check.id=key+"-"+entryKey;
             check.classList.add("checkbox");
             check.checked = true;
             filtersList.push(check);

@@ -1,6 +1,9 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory
+import os
+
 from forest_data import ForestData
 from utils import JsonLoader
+
 
 class web:
     def __init__(self, forest):
@@ -108,3 +111,7 @@ class web:
             filters["area_types"] = area_types
 
             return jsonify(filters)
+
+        @self.app.route('/favicon.ico')
+        def favicon():
+            return send_from_directory(os.path.join(self.app.root_path, 'static'), 'images/icon.png')
