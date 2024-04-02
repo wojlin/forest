@@ -1,4 +1,7 @@
 from typing import List
+from tqdm import tqdm
+import traceback
+import logging
 import json
 import os
 
@@ -8,7 +11,9 @@ from utils import Fetcher
 
 class ForestData:
     def __init__(self):
-        pass
+        self.logger = logging.getLogger("forest")
+        self.__cols_amount = 100
+        self.__format = '{percentage:.0f}%|{bar}| {n_fmt}/{total_fmt} Elements | Elapsed: {elapsed} | Remaining: {remaining}'
 
     def get_rdlp(self) -> List[RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
@@ -16,26 +21,43 @@ class ForestData:
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
-                    data = json.loads(file.read())
-                    return [RDLP(data[item]["name"], data[item]["id"]) for item in data]
+                    data: dict = json.loads(file.read())
+                    amount = len(data)
+                    rdlp = []
+                    with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
+                              bar_format=self.__format) as pbar:
+                        for i in range(amount):
+                            i = str(i)
+                            rdlp.append(RDLP(data[i]["name"], data[i]["id"]))
+                            pbar.update(1)
+                    return rdlp
             except Exception as e:
-                print(e)
+                print(traceback.format_exc())
 
-        print("rdlp information is missing. fetching resource...")
+        self.logger.warning("rdlp information is missing. fetching resource...")
 
         content = Fetcher().get(
             "https://ogcapi.bdl.lasy.gov.pl/collections/rdlp/items?f=json&lang=en-US&skipGeometry=true")
-        items = [element for element in content["features"]]
-        rdlp = [RDLP(item['properties']['region_name'], int(item['properties']['region_cd'])) for item in items]
+
+        amount = len(content["features"])
+        rdlp = []
+        with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
+                  bar_format=self.__format) as pbar:
+            for i in range(amount):
+                item = content["features"][i]
+                rdlp.append(RDLP(item['properties']['region_name'], int(item['properties']['region_cd'])))
+                pbar.update(1)
 
         data_to_save = {}
+        iter = 0
         for item in rdlp:
-            data_to_save[item.id] = {"name": item.name, "id": item.id}
+            data_to_save[iter] = {"name": item.name, "id": item.id}
+            iter+=1
 
-        with open(path, 'w') as file:
-            file.write(json.dumps(data_to_save))
+        with open(path, 'w', encoding='utf-8') as file:
+            json.dump(data_to_save, file, indent=4, ensure_ascii=False)
 
-        print("rdlp information fetched!")
+        self.logger.warning("rdlp information fetched!")
 
         return rdlp
 
@@ -46,36 +68,112 @@ class ForestData:
             try:
                 with open(path, 'r') as file:
                     data = json.loads(file.read())
-                    return [
-                        ForestDistrict(data[item]["name"], data[item]["id"], data[item]["id"], data[item]["rdlp_id"])
-                        for item in data]
+                    amount = len(data)
+                    district = []
+                    with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
+                              bar_format=self.__format) as pbar:
+                        for i in range(amount):
+                            i = str(i)
+                            district.append(ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["id"], data[str(i)]["rdlp_id"]))
+                            pbar.update(1)
+                    return district
             except Exception as e:
-                print(e)
+                print(traceback.format_exc())
 
-        print("district information is missing. fetching resource...")
+        self.logger.warning("district information is missing. fetching resource...")
 
         content = Fetcher().get("https://ogcapi.bdl.lasy.gov.pl/collections/nadlesnictwa/items"
                                 "?f=json&lang=en-US&limit=10000&skipGeometry=true&offset=0")
 
+        amount = len(content["features"])
         district = []
-        for item in content["features"]:
-            data = item["properties"]
-            district.append(
-                ForestDistrict(data["inspectorate_name"], item["id"], data["inspectorate_cd"], data["region_cd"]))
+        with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
+                  bar_format=self.__format) as pbar:
+            for i in range(amount):
+                data = content["features"][i]["properties"]
+                district.append(
+                    ForestDistrict(data["inspectorate_name"], content["features"][i]["id"], data["inspectorate_cd"], data["region_cd"]))
+                pbar.update(1)
 
         data_to_save = {}
+        iter = 0
         for item in district:
-            data_to_save[f"{item.id}"] = {"name": item.name,
+            data_to_save[iter] = {"name": item.name,
                                           "id": item.id,
                                           "district_id": item.district_id,
                                           "rdlp_id": item.rdlp_id}
+            iter+=1
 
-        with open(path, 'w') as file:
-            file.write(json.dumps(data_to_save))
+        with open(path, 'w', encoding='utf-8') as file:
+            json.dump(data_to_save, file, indent=4, ensure_ascii=False)
 
-        print("district information fetched!")
+        self.logger.warning("district information fetched!")
 
         return district
 
     def get_forestry(self) -> List[Forestry]:
-        pass
+        root = os.path.dirname(os.path.abspath(__file__))
+        path = f"{root}/database/forestry"
+        if os.path.isfile(path):
+            try:
+                with open(path, 'r') as file:
+                    data = json.loads(file.read())
+                    amount = len(data)
+                    forestry = []
+                    with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
+                              bar_format=self.__format) as pbar:
+                        for i in range(amount):
+                            i = str(i)
+                            forestry_name = data[i]["name"]
+                            item_id = data[i]["id"]
+                            rdlp_id = data[i]["rdlp_id"]
+                            district_id = data[i]["district_id"]
+                            forestry_id = data[i]["forestry_id"]
+                            forestry.append(Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id))
+                            pbar.update(1)
+                    return forestry
+            except Exception as e:
+                print(traceback.format_exc())
+
+        self.logger.warning("forestry information is missing. fetching resource...")
+
+        content = Fetcher().get("https://ogcapi.bdl.lasy.gov.pl/collections/lesnictwa/items"
+                                "?f=json&lang=en-US&limit=10000&skipGeometry=true&offset=0")
+
+        amount = len(content["features"])
+        forestry = []
+        with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
+                  bar_format=self.__format) as pbar:
+            for i in range(amount):
+                item = content["features"][i]
+                forestry_name = item["properties"]["forest_range_name"]
+                item_id = item["id"]
+                address = str(item["properties"]["adress_forest"]).split("-")
+
+                # address_forest 	01   -   01   -   1  -   01   - - -
+                #                   ^        ^        ^      ^
+                #               rdlp     district     ?      ?
+
+                rdlp_id = int(address[0])
+                district_id = int(address[1])
+                forestry_id = int( str(address[2]) + str(address[3]) )
+
+                forestry.append(Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id))
+                pbar.update(1)
+
+        data_to_save = {}
+        iter = 0
+        for item in forestry:
+            data_to_save[iter] = {"name": item.name,
+                                          "id": item.id,
+                                          "district_id": item.district_id,
+                                          "rdlp_id": item.rdlp_id,
+                                          "forestry_id": item.forestry_id}
+            iter+=1
+
+        with open(path, 'w', encoding='utf-8') as file:
+            json.dump(data_to_save, file, indent=4, ensure_ascii=False)
+
+        self.logger.warning("forestry information fetched!")
+
+        return forestry
