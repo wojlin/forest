@@ -82,7 +82,7 @@ class ForestDistrict:
         return f"Nadleśnictwo \"{self.__district_name}\" \"{self.__id}\" \"{self.__rdlp_id}-{self.__district_id}\" geometry points: \"{len(self.__geometry)}\""
 
     def json(self):
-        return {"name": self.__district_name, "id": self.__id, "geometry": self.__geometry}
+        return {"name": self.__district_name, "id": self.__id, "rdlp_id": self.__rdlp_id, "district_id": self.__district_id, "geometry": self.__geometry}
 
     @property
     def name(self):
@@ -151,7 +151,7 @@ class Forestry:
         return f"Leśnictwo \"{self.__forestry_name}\" \"{self.__id}\" \"{self.__rdlp_id}-{self.__district_id}-{self.__forestry_id}\" geometry points: \"{len(self.__geometry)}\""
 
     def json(self):
-        return {"name": self.__forestry_name, "id": self.__id, "geometry": self.__geometry}
+        return {"name": self.__forestry_name, "id": self.__id, "rdlp_id": self.__rdlp_id, "district_id": self.__district_id, "forestry_id": self.__forestry_id, "geometry": self.__geometry}
 
     @property
     def name(self):

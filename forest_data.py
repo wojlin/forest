@@ -20,17 +20,18 @@ class ForestData(metaclass=SingletonMeta):
         self.__forestry: List[Forestry] = []
         self.__sectors: List[Sector] = []
 
+
     @property
     def rdlp_data(self):
         return self.__rdlp
 
     @property
     def district_data(self):
-        return self.__rdlp
+        return self.__district
 
     @property
     def forestry_data(self):
-        return self.__rdlp
+        return self.__forestry
 
     def load_forest_data(self):
         self.logger.info("loading rdlp data...")
@@ -41,6 +42,50 @@ class ForestData(metaclass=SingletonMeta):
 
         self.logger.info("loading forestry data...")
         self.__forestry = self.get_forestry()
+
+        self.logger.info("connecting data points...")
+
+
+        amount = len(self.__forestry) * len(self.__district) +  len(self.__district) *len(self.__rdlp)
+        done = 0
+        progress = Progress()
+        task_id = progress.add_task("", total=amount)
+
+
+
+        with progress:
+
+            for forestry in self.__forestry:
+                for district in self.__district:
+
+                    progress_percentage = (done + 1) / amount
+                    bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                    bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+                    done += 1
+                    progress.update(task_id, advance=1,
+                                    description=f"[white]{'processing data:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
+                                    bar_style=bar_style)
+
+                    if int(district.rdlp_id) == int(forestry.rdlp_id):
+                        if int(district.district_id) == int(forestry.district_id):
+                            district.children.append(forestry)
+
+            for rdlp in self.__rdlp:
+                for district in self.__district:
+
+
+                    progress_percentage = (done + 1) / amount
+                    bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                    bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+                    done += 1
+                    progress.update(task_id, advance=1,
+                                    description=f"[white]{'processing data:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
+                                    bar_style=bar_style)
+
+                    if int(rdlp.id) == int(district.rdlp_id):
+                        rdlp.children.append(district)
+
+        self.logger.info("data is ready!")
 
     def get_rdlp(self) -> List[RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
@@ -136,7 +181,7 @@ class ForestData(metaclass=SingletonMeta):
                                             bar_style=bar_style)
 
                             i = str(i)
-                            district.append(ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["id"],
+                            district.append(ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["district_id"],
                                                            data[str(i)]["rdlp_id"]))
 
 

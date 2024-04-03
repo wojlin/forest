@@ -1,3 +1,18 @@
+@font-face {
+  font-family: 'medieval';
+  src: url('/static/fonts/medieval.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'medieval2';
+  src: url('/static/fonts/medieval2.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 #map
 {
     position:absolute;
@@ -10,6 +25,42 @@
 
 .forest-tooltip
 {
+    font-family: 'medieval2';
+    font-size: 3vh;
+    border: none;
+    box-shadow: none;
     color:black;
-    
+    text-align:center;
+    width:17vh;
+    height:5vh;
+    background: rgba(0,0,0,0);
+    background-image: url('/static/images/ribbon1.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    transform:scale(1);
+    transition: all 0.2s;
+}
+
+.forest-tooltip-scaled
+{
+    width:18vh;
+    height:5.5vh;
+}
+
+.curved-text
+{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: -0.5vh;
+}
+
+.text-path {
+  fill: transparent;
+
+}
+
+.text-text {
+  fill: black;
 }

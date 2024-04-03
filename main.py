@@ -34,6 +34,7 @@ if __name__ == "__main__":
     setup_logging()
 
     forest = ForestData()
+
     forest.load_forest_data()
 
     web(forest)

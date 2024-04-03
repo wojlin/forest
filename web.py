@@ -23,16 +23,29 @@ class web:
                 data[i] = element.json()
             return jsonify(data)
 
-        @self.app.route('/get_district')
-        def get_district():
-            data = {}
-            for i, element in enumerate(self.forest.district_data):
-                data[i] = element.json()
-            return jsonify(data)
+        @self.app.route('/get_district_from_rdlp/<rdlp_id>')
+        def get_district_from_rdlp(rdlp_id: int):
+            for rdlp in self.forest.rdlp_data:
+                if int(rdlp.id) == int(rdlp_id):
+                    data = {}
+                    for i, element in enumerate(rdlp.children):
+                        data[i] = element.json()
 
-        @self.app.route('/get_forestry')
-        def get_forestry():
-            data = {}
-            for i, element in enumerate(self.forest.forestry_data):
-                data[i] = element.json()
-            return jsonify(data)
+                    return jsonify(data)
+
+            return jsonify({"status": "error"})
+
+        @self.app.route('/get_forestry_from_district/<rdlp_id>/<district_id>')
+        def get_forestry_from_district(rdlp_id:int, district_id: int):
+            for rdlp in self.forest.rdlp_data:
+                if int(rdlp.id) == int(rdlp_id):
+                    for district in rdlp.children:
+                        if int(district.district_id) == int(district_id):
+                            print(len(district.children))
+                            data = {}
+                            for i, element in enumerate(district.children):
+                                data[i] = element.json()
+
+                            return jsonify(data)
+
+            return jsonify({"status": "error"})
