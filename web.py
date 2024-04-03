@@ -19,9 +19,20 @@ class web:
         @self.app.route('/get_rdlp')
         def get_rdlp():
             data = {}
-            iter = 0
-            for rdlp in self.forest.rdlp_data:
-                data[iter] = rdlp.json()
-                iter+=1
+            for i, element in enumerate(self.forest.rdlp_data):
+                data[i] = element.json()
+            return jsonify(data)
 
+        @self.app.route('/get_district')
+        def get_district():
+            data = {}
+            for i, element in enumerate(self.forest.district_data):
+                data[i] = element.json()
+            return jsonify(data)
+
+        @self.app.route('/get_forestry')
+        def get_forestry():
+            data = {}
+            for i, element in enumerate(self.forest.forestry_data):
+                data[i] = element.json()
             return jsonify(data)

@@ -11,7 +11,7 @@ class RDLP:
         self.__id = id
 
         root= os.path.dirname(os.path.abspath(__file__))
-        self.__path = f"{root}/database/rdlp{self.__id}.geo"
+        self.__path = f"{root}/database/rdlp/rdlp{self.__id}.geo"
 
         self.__geometry = self.__get_geometry()
 
@@ -49,6 +49,7 @@ class RDLP:
 
         #self.__logger.warning(f"geojson for rdlp \"{self.__id}\" \"{self.__name}\" is missing, fetching resource...")
         geometry = self.__fetch_geometry()
+        self.__geometry = geometry
         self.__save_geometry()
         #self.__logger.warning(f"geojson for rdlp \"{self.__id}\" \"{self.__name}\" fetched!")
         return geometry
@@ -72,7 +73,7 @@ class ForestDistrict:
         self.__rdlp_id = rdlp_id
 
         root = os.path.dirname(os.path.abspath(__file__))
-        self.__path = f"{root}/database/district_{self.__id}.geo"
+        self.__path = f"{root}/database/district/district_{self.__id}.geo"
         self.__geometry = self.__get_geometry()
 
         self.__children = []
@@ -117,6 +118,7 @@ class ForestDistrict:
 
         #self.__logger.warning(f"geojson for district \"{self.__rdlp_id}-{self.__district_id}\" \"{self.__district_name}\" is missing, fetching resource...")
         geometry = self.__fetch_geometry()
+        self.__geometry = geometry
         self.__save_geometry()
         #self.__logger.warning(f"geojson for district \"{self.__rdlp_id}-{self.__district_id}\" \"{self.__district_name}\" fetched!")
         return geometry
@@ -140,7 +142,7 @@ class Forestry:
         self.__forestry_id = forestry_id
 
         root = os.path.dirname(os.path.abspath(__file__))
-        self.__path = f"{root}/database/forestry_{self.__id}.geo"
+        self.__path = f"{root}/database/forestry/forestry_{self.__id}.geo"
         self.__geometry = self.__get_geometry()
 
         self.__children = []
@@ -189,6 +191,7 @@ class Forestry:
 
         #self.__logger.warning(f"geojson for forestry \"{self.__rdlp_id}-{self.__district_id}-{self.__forestry_id}\" \"{self.__forestry_name}\" is missing, fetching resource...")
         geometry = self.__fetch_geometry()
+        self.__geometry = geometry
         self.__save_geometry()
         #self.__logger.warning(f"geojson for forestry \"{self.__rdlp_id}-{self.__district_id}-{self.__forestry_id}\" \"{self.__forestry_name}\" fetched!")
         return geometry

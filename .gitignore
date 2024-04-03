@@ -1,3 +1,6 @@
 .idea/
 __pycache__/
-database/*
+database/*.json
+database/rdlp/*.geo
+database/district/*.geo
+database/forestry/*.geo

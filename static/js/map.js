@@ -20,15 +20,57 @@ function get(url, callback)
 }
 
 
+
+
 function drawRDLP(data)
 {
     data = JSON.parse(data);
-    console.log(data);
+
+    var style =  {
+        fillColor: '#eba85b',
+        weight: 2,
+        opacity: 0.3,
+        color: 'black',
+        dashArray: '1',
+        fillOpacity: 0.6
+    };
+
+
+
     for (const [key, value] of Object.entries(data))
     {
-        console.log(value)
-        let polygon = L.polygon(value["geometry"]).addTo(map);
-        polygon.bindTooltip(value["name"], {permanent: true, direction:"center"});
+
+
+        for(let i = 0; i < value["geometry"].length; i++)
+        {
+            let save = value["geometry"][i][0];
+            value["geometry"][i][0] = value["geometry"][i][1];
+            value["geometry"][i][1] = save;
+        }
+
+        let polygon = L.polygon(value["geometry"], style).addTo(map);
+        polygon.bindTooltip(value["name"], {permanent: true, direction:"center", className: 'forest-tooltip' });
+
+        polygon.on('click', function(e)
+        {
+            map.fitBounds(e.target.getBounds());
+        });
+
+        polygon.on('mouseover', function(e)
+        {
+            var layer = e.target;
+            let newStyle = {};
+            Object.assign(newStyle, style);
+            newStyle.fillOpacity = 0.9;
+            layer.setStyle(newStyle);
+        });
+
+        polygon.on('mouseout', function(e)
+        {
+            var layer = e.target;
+            layer.setStyle(style);
+        });
+
     }
 
 

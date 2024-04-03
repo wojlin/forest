@@ -1,5 +1,5 @@
+from rich.progress import Progress
 from typing import List
-from tqdm import tqdm
 import traceback
 import logging
 import json
@@ -12,7 +12,7 @@ from utils import Fetcher, SingletonMeta
 class ForestData(metaclass=SingletonMeta):
     def __init__(self):
         self.logger = logging.getLogger("forest")
-        self.__cols_amount = 100
+        self.__cols_amount = 20
         self.__format = '{percentage:.0f}%|{bar}| {n_fmt}/{total_fmt} Elements | Elapsed: {elapsed} | Remaining: {remaining}'
 
         self.__rdlp: List[RDLP] = []
@@ -44,19 +44,31 @@ class ForestData(metaclass=SingletonMeta):
 
     def get_rdlp(self) -> List[RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
-        path = f"{root}/database/rdlp"
+        path = f"{root}/database/rdlp.json"
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
                     data: dict = json.loads(file.read())
                     amount = len(data)
                     rdlp = []
-                    with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
-                              bar_format=self.__format) as pbar:
+
+
+
+
+                    with Progress() as progress:
+                        task_id = progress.add_task("[red]Scraping", total=amount)
                         for i in range(amount):
+                            progress_percentage = (i + 1) / amount
+                            bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                            bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
                             i = str(i)
                             rdlp.append(RDLP(data[i]["name"], data[i]["id"]))
-                            pbar.update(1)
+                            progress.update(task_id, advance=1,
+                                            description=f"[white]{'processing rdlp:'.ljust(self.__cols_amount)} {bar_style}{int(i) + 1}[white]/[green]{amount}",
+                                            bar_style=bar_style)
+
+
+
                     return rdlp
             except Exception as e:
                 print(traceback.format_exc())
@@ -68,12 +80,24 @@ class ForestData(metaclass=SingletonMeta):
 
         amount = len(content["features"])
         rdlp = []
-        with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
-                  bar_format=self.__format) as pbar:
+
+        progress = Progress()
+        task_id = progress.add_task("", total=amount)
+
+        with progress:
             for i in range(amount):
+                progress_percentage = (i + 1) / amount
+                bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                progress.update(task_id, advance=1,
+                                description=f"[white]{'downloading rdlp:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
+                                bar_style=bar_style)
+
                 item = content["features"][i]
                 rdlp.append(RDLP(item['properties']['region_name'], int(item['properties']['region_cd'])))
-                pbar.update(1)
+
+
 
         data_to_save = {}
         iter = 0
@@ -90,19 +114,33 @@ class ForestData(metaclass=SingletonMeta):
 
     def get_district(self) -> List[ForestDistrict]:
         root = os.path.dirname(os.path.abspath(__file__))
-        path = f"{root}/database/forest_district"
+        path = f"{root}/database/district.json"
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
                     data = json.loads(file.read())
                     amount = len(data)
                     district = []
-                    with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
-                              bar_format=self.__format) as pbar:
+
+                    progress = Progress()
+                    task_id = progress.add_task("", total=amount)
+
+                    with progress:
                         for i in range(amount):
+                            progress_percentage = (i + 1) / amount
+                            bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                            bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                            progress.update(task_id, advance=1,
+                                            description=f"[white]{'processing district:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
+                                            bar_style=bar_style)
+
                             i = str(i)
-                            district.append(ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["id"], data[str(i)]["rdlp_id"]))
-                            pbar.update(1)
+                            district.append(ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["id"],
+                                                           data[str(i)]["rdlp_id"]))
+
+
+
                     return district
             except Exception as e:
                 print(traceback.format_exc())
@@ -114,13 +152,26 @@ class ForestData(metaclass=SingletonMeta):
 
         amount = len(content["features"])
         district = []
-        with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
-                  bar_format=self.__format) as pbar:
+
+        progress = Progress()
+        task_id = progress.add_task("", total=amount)
+
+        with progress:
             for i in range(amount):
+                progress_percentage = (i + 1) / amount
+                bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                progress.update(task_id, advance=1,
+                                description=f"[white]{'downloading district:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
+                                bar_style=bar_style)
+
                 data = content["features"][i]["properties"]
                 district.append(
-                    ForestDistrict(data["inspectorate_name"], content["features"][i]["id"], data["inspectorate_cd"], data["region_cd"]))
-                pbar.update(1)
+                    ForestDistrict(data["inspectorate_name"], content["features"][i]["id"], data["inspectorate_cd"],
+                                   data["region_cd"]))
+
+
 
         data_to_save = {}
         iter = 0
@@ -140,16 +191,27 @@ class ForestData(metaclass=SingletonMeta):
 
     def get_forestry(self) -> List[Forestry]:
         root = os.path.dirname(os.path.abspath(__file__))
-        path = f"{root}/database/forestry"
+        path = f"{root}/database/forestry.json"
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
                     data = json.loads(file.read())
                     amount = len(data)
                     forestry = []
-                    with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
-                              bar_format=self.__format) as pbar:
+
+                    progress = Progress()
+                    task_id = progress.add_task("", total=amount)
+
+                    with progress:
                         for i in range(amount):
+                            progress_percentage = (i + 1) / amount
+                            bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                            bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                            progress.update(task_id, advance=1,
+                                            description=f"[white]{'processing forestry:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
+                                            bar_style=bar_style)
+
                             i = str(i)
                             forestry_name = data[i]["name"]
                             item_id = data[i]["id"]
@@ -157,7 +219,8 @@ class ForestData(metaclass=SingletonMeta):
                             district_id = data[i]["district_id"]
                             forestry_id = data[i]["forestry_id"]
                             forestry.append(Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id))
-                            pbar.update(1)
+
+
                     return forestry
             except Exception as e:
                 print(traceback.format_exc())
@@ -169,9 +232,20 @@ class ForestData(metaclass=SingletonMeta):
 
         amount = len(content["features"])
         forestry = []
-        with tqdm(total=amount, desc="reading rdlp", ncols=self.__cols_amount, unit_scale=True, unit="item",
-                  bar_format=self.__format) as pbar:
+
+        progress = Progress()
+        task_id = progress.add_task("", total=amount)
+
+        with progress:
             for i in range(amount):
+                progress_percentage = (i + 1) / amount
+                bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                progress.update(task_id, advance=1,
+                                description=f"[white]{'downloading forestry:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
+                                bar_style=bar_style)
+
                 item = content["features"][i]
                 forestry_name = item["properties"]["forest_range_name"]
                 item_id = item["id"]
@@ -183,10 +257,11 @@ class ForestData(metaclass=SingletonMeta):
 
                 rdlp_id = int(address[0])
                 district_id = int(address[1])
-                forestry_id = int( str(address[2]) + str(address[3]) )
+                forestry_id = int(str(address[2]) + str(address[3]))
 
                 forestry.append(Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id))
-                pbar.update(1)
+
+
 
         data_to_save = {}
         iter = 0
