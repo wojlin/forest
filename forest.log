@@ -13093,3 +13093,306 @@ WARNING:forest:forestry information fetched!
 INFO:forest:loading rdlp data...
 INFO:forest:loading district data...
 INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:2137
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:2137
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:11:34] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:11:34] "GET /static/css/style.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:11:34] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:12:00] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:12:00] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:12:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:12:03] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:16:33] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:16:33] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:16:33] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:16:41] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:16:41] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:16:41] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:2137
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:17:53] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:17:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:17:53] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:17:55] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:17:55] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:17:55] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:18:02] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:18:02] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:18:02] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:04] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:04] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:04] "GET /static/js/map.js HTTP/1.1" 200 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 873, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 892, in finalize_request
+    response = self.make_response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1183, in make_response
+    rv = self.json.response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:08] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:15] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:15] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:15] "GET /static/js/map.js HTTP/1.1" 200 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 873, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 892, in finalize_request
+    response = self.make_response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1183, in make_response
+    rv = self.json.response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:19] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:30] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:30] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:30] "GET /static/js/map.js HTTP/1.1" 200 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 873, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 892, in finalize_request
+    response = self.make_response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1183, in make_response
+    rv = self.json.response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:35] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:48] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:48] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:48] "GET /static/js/map.js HTTP/1.1" 200 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 873, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 892, in finalize_request
+    response = self.make_response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1183, in make_response
+    rv = self.json.response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:52] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:57] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:19:57] "GET /static/js/map.js HTTP/1.1" 200 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 873, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 892, in finalize_request
+    response = self.make_response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1183, in make_response
+    rv = self.json.response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:20:01] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:20:08] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:20:08] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:20:08] "GET /static/js/map.js HTTP/1.1" 200 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 873, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 892, in finalize_request
+    response = self.make_response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1183, in make_response
+    rv = self.json.response(rv)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:20:12] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:2137
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:22:59] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:22:59] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:22:59] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+ERROR:forest:Exception on /get_rdlp [GET]
+Traceback (most recent call last):
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/PROJECTS/FOREST/web.py", line 21, in get_rdlp
+    return jsonify(self.forest.get_rdlp())
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/__init__.py", line 170, in jsonify
+    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/PROJECTS/FOREST/venv/lib/python3.8/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type RDLP is not JSON serializable
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:23:03] "[35m[1mGET /get_rdlp HTTP/1.1[0m" 500 -
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:2137
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:35:05] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:35:05] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:35:05] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:35:06] "GET /get_rdlp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:38:04] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:38:04] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:38:04] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:38:05] "GET /get_rdlp HTTP/1.1" 200 -
+INFO:forest:loading rdlp data...
+INFO:forest:loading district data...
+INFO:forest:loading forestry data...
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:2137
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:39:50] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:39:50] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:39:50] "[36mGET /static/js/map.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:39:51] "GET /get_rdlp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:42:53] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:42:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:42:53] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:42:53] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:42:53] "GET /get_rdlp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:27] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:27] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:39] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:39] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:39] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:40] "GET /get_rdlp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:55] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:55] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:55] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:55] "GET /get_rdlp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:45:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:47:24] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:47:24] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:47:24] "GET /static/js/map.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Apr/2024 11:47:25] "GET /get_rdlp HTTP/1.1" 200 -

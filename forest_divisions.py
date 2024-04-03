@@ -14,10 +14,14 @@ class RDLP:
         self.__path = f"{root}/database/rdlp{self.__id}.geo"
 
         self.__geometry = self.__get_geometry()
-        self.__save_geometry()
+
+        self.__children = []
 
     def __repr__(self):
         return f"Regionalna Dyrekcja Lasów Państwowych \"{self.__name}\" \"{self.__id}\" geometry points: \"{len(self.__geometry)}\""
+
+    def json(self):
+        return {"name": self.__name, "id": self.__id, "geometry": self.__geometry}
 
     @property
     def name(self):
@@ -32,8 +36,8 @@ class RDLP:
         return self.__geometry
 
     @property
-    def path(self):
-        return self.__path
+    def children(self):
+        return self.__children
 
     def __get_geometry(self):
         if os.path.isfile(self.__path):
@@ -45,6 +49,7 @@ class RDLP:
 
         #self.__logger.warning(f"geojson for rdlp \"{self.__id}\" \"{self.__name}\" is missing, fetching resource...")
         geometry = self.__fetch_geometry()
+        self.__save_geometry()
         #self.__logger.warning(f"geojson for rdlp \"{self.__id}\" \"{self.__name}\" fetched!")
         return geometry
 
@@ -69,10 +74,14 @@ class ForestDistrict:
         root = os.path.dirname(os.path.abspath(__file__))
         self.__path = f"{root}/database/district_{self.__id}.geo"
         self.__geometry = self.__get_geometry()
-        self.__save_geometry()
+
+        self.__children = []
 
     def __repr__(self):
         return f"Nadleśnictwo \"{self.__district_name}\" \"{self.__id}\" \"{self.__rdlp_id}-{self.__district_id}\" geometry points: \"{len(self.__geometry)}\""
+
+    def json(self):
+        return {"name": self.__district_name, "id": self.__id, "geometry": self.__geometry}
 
     @property
     def name(self):
@@ -94,6 +103,10 @@ class ForestDistrict:
     def geometry(self):
         return self.__geometry
 
+    @property
+    def children(self):
+        return self.__children
+
     def __get_geometry(self):
         if os.path.isfile(self.__path):
             try:
@@ -104,6 +117,7 @@ class ForestDistrict:
 
         #self.__logger.warning(f"geojson for district \"{self.__rdlp_id}-{self.__district_id}\" \"{self.__district_name}\" is missing, fetching resource...")
         geometry = self.__fetch_geometry()
+        self.__save_geometry()
         #self.__logger.warning(f"geojson for district \"{self.__rdlp_id}-{self.__district_id}\" \"{self.__district_name}\" fetched!")
         return geometry
 
@@ -128,10 +142,14 @@ class Forestry:
         root = os.path.dirname(os.path.abspath(__file__))
         self.__path = f"{root}/database/forestry_{self.__id}.geo"
         self.__geometry = self.__get_geometry()
-        self.__save_geometry()
+
+        self.__children = []
 
     def __repr__(self):
         return f"Leśnictwo \"{self.__forestry_name}\" \"{self.__id}\" \"{self.__rdlp_id}-{self.__district_id}-{self.__forestry_id}\" geometry points: \"{len(self.__geometry)}\""
+
+    def json(self):
+        return {"name": self.__forestry_name, "id": self.__id, "geometry": self.__geometry}
 
     @property
     def name(self):
@@ -157,6 +175,10 @@ class Forestry:
     def geometry(self):
         return self.__geometry
 
+    @property
+    def children(self):
+        return self.__children
+
     def __get_geometry(self):
         if os.path.isfile(self.__path):
             try:
@@ -167,6 +189,7 @@ class Forestry:
 
         #self.__logger.warning(f"geojson for forestry \"{self.__rdlp_id}-{self.__district_id}-{self.__forestry_id}\" \"{self.__forestry_name}\" is missing, fetching resource...")
         geometry = self.__fetch_geometry()
+        self.__save_geometry()
         #self.__logger.warning(f"geojson for forestry \"{self.__rdlp_id}-{self.__district_id}-{self.__forestry_id}\" \"{self.__forestry_name}\" fetched!")
         return geometry
 
@@ -180,15 +203,18 @@ class Forestry:
 
 
 class Sector:
-    def __init__(self, sector_name, id, area_type:str, site_type: str, forest_function: str, species: str, species_age: int):
+    def __init__(self, sector_name, id, area_type:str, site_type: str, forest_function: str, species: str, species_age: int, rotat_age: int, year: int):
         self.__logger = logging.getLogger("forest")
         self.__sector_name = sector_name
         self.__id = id
-        self.__area_type = area_type # rodzaj terenu # "https://www.lasy.gov.pl/pl/publikacje/copy_of_gospodarka-lesna/urzadzanie/iul/instrukcja-urzadzania-lasu-czesc-i-dokument-przed-korekta/@@download/file/Instrukcja%20urz%C4%85dzania%20lasu_cz%201.pdf"
-        self.__site_type = site_type  # rodzaj lasu
+        self.__area_type = area_type # rodzaj powierzchni  "https://www.lasy.gov.pl/pl/publikacje/copy_of_gospodarka-lesna/urzadzanie/iul/instrukcja-urzadzania-lasu-czesc-i-dokument-przed-korekta/@@download/file/Instrukcja%20urz%C4%85dzania%20lasu_cz%201.pdf"
+        self.__site_type = site_type  # typ siedliskowy lasu  https://www.encyklopedialesna.pl/haslo/las-mieszany-swiezy-lmsw/
         self.__forest_function = forest_function  # funkcja lasu (kategorie ochronne) https://www.encyklopedialesna.pl/haslo/kategorie-lasow-ochronnych/
         self.__species = species  # gatunki drzew https://www.encyklopedialesna.pl/haslo/typ-drzewostanu-td/
         self.__species_age = species_age  # wiek drzew
+        self.__rotat_age = rotat_age # wiek rębności
+        self.__year = year # rok w którym zostały sporządzone dane
+        
 
 
 

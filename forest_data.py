@@ -5,15 +5,42 @@ import logging
 import json
 import os
 
-from forest_divisions import RDLP, ForestDistrict, Forestry
-from utils import Fetcher
+from forest_divisions import RDLP, ForestDistrict, Forestry, Sector
+from utils import Fetcher, SingletonMeta
 
 
-class ForestData:
+class ForestData(metaclass=SingletonMeta):
     def __init__(self):
         self.logger = logging.getLogger("forest")
         self.__cols_amount = 100
         self.__format = '{percentage:.0f}%|{bar}| {n_fmt}/{total_fmt} Elements | Elapsed: {elapsed} | Remaining: {remaining}'
+
+        self.__rdlp: List[RDLP] = []
+        self.__district: List[ForestDistrict] = []
+        self.__forestry: List[Forestry] = []
+        self.__sectors: List[Sector] = []
+
+    @property
+    def rdlp_data(self):
+        return self.__rdlp
+
+    @property
+    def district_data(self):
+        return self.__rdlp
+
+    @property
+    def forestry_data(self):
+        return self.__rdlp
+
+    def load_forest_data(self):
+        self.logger.info("loading rdlp data...")
+        self.__rdlp = self.get_rdlp()
+
+        self.logger.info("loading district data...")
+        self.__district = self.get_district()
+
+        self.logger.info("loading forestry data...")
+        self.__forestry = self.get_forestry()
 
     def get_rdlp(self) -> List[RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
@@ -177,3 +204,10 @@ class ForestData:
         self.logger.warning("forestry information fetched!")
 
         return forestry
+
+    def get_sectors(self):
+        for rdlp in self.__rdlp:
+            name: str = f"RDLP_{rdlp.name.lower().title()}_wydzielenia"
+            url: str = f"https://ogcapi.bdl.lasy.gov.pl/collections/{name}/items?f=json&lang=en-US&limit=100&skipGeometry=true&offset=0"
+            print(url)
+            #content = Fetcher().get(url)

@@ -3,8 +3,9 @@ import colorlog
 
 from forest_data import ForestData
 from utils import Fetcher
+from web import web
 
-if __name__ == "__main__":
+def setup_logging():
     logging.basicConfig(filename='forest.log', level=logging.DEBUG)
     logger = logging.getLogger("forest")
     # Create a colorlog formatter
@@ -27,26 +28,18 @@ if __name__ == "__main__":
     # Add console handler to the logger
     logger.addHandler(console_handler)
 
+
+
+if __name__ == "__main__":
+    setup_logging()
+
     forest = ForestData()
-    logger.info("loading rdlp data...")
-    rdlp = forest.get_rdlp()
+    forest.load_forest_data()
 
-    logger.info("loading district data...")
-    district = forest.get_district()
+    web(forest)
 
-    logger.info("loading forestry data...")
-    forestry = forest.get_forestry()
 
-    """
-    print()
-    print()
-    for item in rdlp:
-        print(item)
-    for item in district:
-        print(item)
-    for item in forestry:
-        print(item)
-    """
+    #sectors = forest.get_sectors()
 
     #print(Fetcher().requests_done)
 
