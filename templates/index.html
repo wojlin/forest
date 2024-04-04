@@ -7,12 +7,95 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "/static/css/style.css">
 
 </head>
 <body>
+
+
+
     <div id="map"></div>
 
-    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+
+
+    <div id="map-title">
+            <div id="map-title-ribbon">
+                <svg class="title-text" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <path class="text-path" id="curve" fill="none" stroke="black" d="M73.2,148.6c4-6.1,65.5-96.8,178.6-95.6c111.3,1.2,170.8,90.3,175.1,97" />
+                <text class="text-text" style="text-anchor: middle;">
+                    <textPath xlink:href="#curve" startOffset="50%">Lasy Polskie</textPath>
+                </text>
+            </svg>
+            <button id="go-back-button" onclick="go_back();">⮐</button>
+        </div>
+    </div>
+
+    <div id="info">
+        <p id="info-name"></p>
+        <table id="info-table">
+          <thead>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="info-td">RDLP</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">Nadleśnictwo</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">Leśnictwo</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">ID</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">Adres</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">Uprawa leśna</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">Rodzaj Powierzchni</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">typ siedliskowy lasu</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">budowa pionowa drzewostanu</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">funkcja lasu</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">gatunki drzew</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">wiek drzew</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">wiek rębności</td>
+              <td class="info-td">N/A</td>
+            </tr>
+            <tr>
+              <td class="info-td">rok gromadzenia danych</td>
+              <td class="info-td">N/A</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+    <script src="/static/js/map.js"></script>
 </body>
 </html>

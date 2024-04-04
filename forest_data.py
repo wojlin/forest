@@ -1,5 +1,6 @@
 from rich.progress import Progress
-from typing import List
+from unidecode import unidecode
+from typing import List, Dict
 import traceback
 import logging
 import json
@@ -18,7 +19,7 @@ class ForestData(metaclass=SingletonMeta):
         self.__rdlp: List[RDLP] = []
         self.__district: List[ForestDistrict] = []
         self.__forestry: List[Forestry] = []
-        self.__sectors: List[Sector] = []
+        self.__sectors: Dict[str, List[Sector]] = {}
 
 
     @property
@@ -33,9 +34,16 @@ class ForestData(metaclass=SingletonMeta):
     def forestry_data(self):
         return self.__forestry
 
+    @property
+    def sectors_data(self):
+        return self.__sectors
+
     def load_forest_data(self):
         self.logger.info("loading rdlp data...")
         self.__rdlp = self.get_rdlp()
+
+
+
 
         self.logger.info("loading district data...")
         self.__district = self.get_district()
@@ -44,17 +52,22 @@ class ForestData(metaclass=SingletonMeta):
         self.__forestry = self.get_forestry()
 
         self.logger.info("connecting data points...")
+        self.connect_data_points()
+
+        self.logger.info("loading sectors data...")
+        #self.__sectors = self.get_sectors()
+
+        self.logger.info("all data is ready!")
+        
 
 
-        amount = len(self.__forestry) * len(self.__district) +  len(self.__district) *len(self.__rdlp)
+    def connect_data_points(self):
+        amount = len(self.__forestry) * len(self.__district) + len(self.__district) * len(self.__rdlp)
         done = 0
         progress = Progress()
         task_id = progress.add_task("", total=amount)
 
-
-
         with progress:
-
             for forestry in self.__forestry:
                 for district in self.__district:
 
@@ -73,7 +86,6 @@ class ForestData(metaclass=SingletonMeta):
             for rdlp in self.__rdlp:
                 for district in self.__district:
 
-
                     progress_percentage = (done + 1) / amount
                     bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
                     bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
@@ -84,8 +96,6 @@ class ForestData(metaclass=SingletonMeta):
 
                     if int(rdlp.id) == int(district.rdlp_id):
                         rdlp.children.append(district)
-
-        self.logger.info("data is ready!")
 
     def get_rdlp(self) -> List[RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
@@ -325,9 +335,129 @@ class ForestData(metaclass=SingletonMeta):
 
         return forestry
 
-    def get_sectors(self):
+    def get_sectors(self) -> Dict[str, List[Sector]]:
+
+        all_sectors: Dict[str, List[Sector]] = {}
+
         for rdlp in self.__rdlp:
-            name: str = f"RDLP_{rdlp.name.lower().title()}_wydzielenia"
-            url: str = f"https://ogcapi.bdl.lasy.gov.pl/collections/{name}/items?f=json&lang=en-US&limit=100&skipGeometry=true&offset=0"
-            print(url)
-            #content = Fetcher().get(url)
+            name: str = unidecode(f"RDLP_{rdlp.name.lower().title()}_wydzielenia")
+            root = os.path.dirname(os.path.abspath(__file__))
+            path = f"{root}/database/{name}.json"
+
+            ### read
+            if os.path.isfile(path):
+                self.logger.warning(f"reading {name} data...")
+                try:
+                    with open(path, 'r') as file:
+                        data = json.loads(file.read())
+                        amount = len(data[name])
+                        sectors = {name: []}
+
+                        progress = Progress()
+                        task_id = progress.add_task("", total=amount)
+
+                        with progress:
+                            for i in range(amount):
+                                progress_percentage = (i + 1) / amount
+                                bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                                bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                                progress.update(task_id, advance=1,
+                                                description=f"[white]{'processing forestry:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
+                                                bar_style=bar_style)
+                                sectors[name].append(data[name][i])
+                        all_sectors[name] = sectors[name]
+                    continue
+
+                except Exception as e:
+                    print(traceback.format_exc())
+
+            ### fetch
+
+            self.logger.warning(f"sectors information for {name} is missing. fetching resource...")
+
+
+            sectors = {name: []}
+
+            limit = 1
+            offset = 0
+            url: str = f"https://ogcapi.bdl.lasy.gov.pl/collections/{name}/items?f=json&lang=en-US&limit={limit}&skipGeometry=true&offset={offset}"
+
+            content = Fetcher().get(url)
+            total_amount = content["numberMatched"]
+
+
+            total_left = total_amount
+            limit = 100
+            offset = 0
+
+            progress = Progress()
+            task_id = progress.add_task("", total=total_amount)
+
+            with progress:
+                while total_left > 0:
+                    url: str = f"https://ogcapi.bdl.lasy.gov.pl/collections/{name}/items?f=json&lang=en-US&limit={limit}&skipGeometry=false&offset={offset}"
+                    content = Fetcher().get(url)
+
+                    amount = len(content["features"])
+
+                    for i in range(amount):
+                        item = content["features"][i]
+                        sector_name = item["properties"]["nazwa"]
+                        item_id = item["id"]
+                        silvicult = item["properties"]["silvicult"]
+                        area_type = item["properties"]["area_type"]
+                        stand_stru = item["properties"]["stand_stru"]
+                        species_cd = item["properties"]["species_cd"]
+                        spec_age = item["properties"]["spec_age"]
+                        adr_for = item["properties"]["adr_for"]
+                        site_type = item["properties"]["site_type"]
+                        forest_fun = item["properties"]["forest_fun"]
+                        rotat_age  = item["properties"]["rotat_age"]
+                        a_year = item["properties"]["a_year"]
+                        geometry = item["geometry"]["coordinates"][0][0]
+
+                        sector = Sector(sector_name=sector_name,
+                                        id= item_id,
+                                        address= adr_for,
+                                        silvicult = silvicult,
+                                        area_type=area_type,
+                                        site_type=site_type,
+                                        stand_structure = stand_stru,
+                                        forest_function=forest_fun,
+                                        species=species_cd,
+                                        species_age=spec_age,
+                                        rotat_age=rotat_age,
+                                        year=a_year,
+                                        geometry = geometry)
+
+
+                        sectors[name].append(sector)
+
+                    offset += limit
+                    total_left -= limit
+
+                    progress_percentage = ( (total_amount- total_left)) / total_amount
+                    bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                    bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+
+                    progress.update(task_id, advance=limit,
+                                    description=f"[white]downloading {name} {bar_style}{ total_amount - total_left}[white]/[green]{total_amount}",
+                                    bar_style=bar_style)
+
+            data_to_save = {name: []}
+            for item in sectors[name]:
+                data_to_save[name].append(item.json)
+
+            with open(path, 'w', encoding='utf-8') as file:
+                json.dump(data_to_save, file, indent=4, ensure_ascii=False)
+
+            all_sectors[name] = list(sectors[name])
+            self.logger.warning(f"fetched sectors for {name}!")
+
+
+        self.logger.warning("sectors information fetched!")
+
+
+        return all_sectors
+

@@ -206,22 +206,57 @@ class Forestry:
 
 
 class Sector:
-    def __init__(self, sector_name, id, area_type:str, site_type: str, forest_function: str, species: str, species_age: int, rotat_age: int, year: int):
+    def __init__(self, sector_name: str, id: int, address: str, silvicult: str, area_type:str, site_type: str, stand_structure: str, forest_function: str, species: str, species_age: int, rotat_age: int, year: int, geometry):
         self.__logger = logging.getLogger("forest")
         self.__sector_name = sector_name
         self.__id = id
+        self.__address = address
+        self.__silvicult = silvicult
         self.__area_type = area_type # rodzaj powierzchni  "https://www.lasy.gov.pl/pl/publikacje/copy_of_gospodarka-lesna/urzadzanie/iul/instrukcja-urzadzania-lasu-czesc-i-dokument-przed-korekta/@@download/file/Instrukcja%20urz%C4%85dzania%20lasu_cz%201.pdf"
         self.__site_type = site_type  # typ siedliskowy lasu  https://www.encyklopedialesna.pl/haslo/las-mieszany-swiezy-lmsw/
+        self.__stand_structure = stand_structure # budowa pionowa drzewostanu
         self.__forest_function = forest_function  # funkcja lasu (kategorie ochronne) https://www.encyklopedialesna.pl/haslo/kategorie-lasow-ochronnych/
         self.__species = species  # gatunki drzew https://www.encyklopedialesna.pl/haslo/typ-drzewostanu-td/
         self.__species_age = species_age  # wiek drzew
         self.__rotat_age = rotat_age # wiek rębności
         self.__year = year # rok w którym zostały sporządzone dane
-        
+        self.__geometry = geometry
 
 
+    def __repr__(self):
+        data = ""
+        data += f"####  {self.__sector_name} ####\n"
+        data += f"id:  {self.__id}\n"
+        data += f"address:  {self.__address}\n"
+        data += f"silvicult:  {self.__silvicult}\n"
+        data += f"area_type:  {self.__area_type}\n"
+        data += f"site_type:  {self.__site_type}\n"
+        data += f"stand_structure:  {self.__stand_structure}\n"
+        data += f"forest_function:  {self.__forest_function}\n"
+        data += f"species:  {self.__species}\n"
+        data += f"species_age:  {self.__species_age}\n"
+        data += f"rotat_age:  {self.__rotat_age}\n"
+        data += f"year:  {self.__year}\n"
+        data += f"geometry:  {self.__geometry}\n"
+        data += f"#############################\n"
+        return data
+    @property
+    def json(self):
+        return {"sector_name": self.__sector_name,
+                "id": self.__id,
+                "address": self.__address,
+                "silvicult": self.__silvicult,
+                "area_type": self.__area_type,
+                "site_type": self.__site_type,
+                "stand_structure": self.__stand_structure,
+                "forest_function": self.__forest_function,
+                "spiecies": self.__species,
+                "species_age": self.__species_age,
+                "rotation_age": self.__rotat_age,
+                "year": self.__year,
+                "geometry": self.__geometry
+                }
 
-        root = os.path.dirname(os.path.abspath(__file__))
-        self.__path = f"{root}/database/forestry_{self.__id}.geo"
-        self.__geometry = self.__get_geometry()
-        self.__save_geometry()
+    @property
+    def sector_name(self):
+        return self.__sector_name

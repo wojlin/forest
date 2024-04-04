@@ -2,11 +2,69 @@ var map = L.map('map').setView([52, 19.0], 7);
 
 
 L.tileLayer('https://tile-c.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution: 'made by Wojciech Linowski'
 }).addTo(map);
 
+map.zoomControl.remove();
 
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
+
+var overlay = L.DomUtil.create('div', 'overlay', map.getPane('overlayPane'));
+overlay.style.position = 'absolute';
+overlay.style.width = '100%';
+overlay.style.height = '100%';
+overlay.style.backgroundColor = 'rgba(207,178,156,0.6)'; // Semi-transparent white
+
+
+var overlay2 = L.DomUtil.create('div', 'overlay2', map.getPane('overlayPane'));
+overlay2.style.position = 'absolute';
+overlay2.style.width = '1000vw !important';
+overlay2.style.height = '1000vh !important';
+overlay2.style.left = "-100 vw";
+overlay2.style.top= "-100 vh";
+overlay2.style.backgroundImage = 'url(/static/images/dots.svg")'; // Path to your semi-transparent tile image
+overlay2.style.backgroundRepeat = 'repeat'; // This makes the image repeat across the space
+overlay2.style.pointerEvents = 'none';
+
+var currentZoom = null;
+var currentLevel = 0;
+var currentId = "";
+
+function go_back()
+{
+    console.log("go back!");
+    currentLevel -= 1;
+    console.log(currentZoom);
+    if(currentLevel < 0)
+    {
+        currentLevel = 0;
+        console.log("cannot go back futher!")
+        return;
+    }
+    else if(currentLevel == 0)
+    {
+        clearMap();
+        map.setView([52, 19.0], 7);
+        get("/get_rdlp", drawRDLP);
+    }
+    else if(currentLevel == 1)
+    {
+        clearMap();
+        var z = map.getBoundsZoom(currentZoom);
+        console.log(map.getZoom(),z)
+        map.fitBounds(currentZoom, true);
+        map.setZoom(z);
+        get("/get_district_from_rdlp/" + currentId, drawDistrict);
+    }else
+    {
+        console.log("too high level!")
+    }
+
+
+
+}
 
 function get(url, callback)
 {
@@ -151,6 +209,7 @@ function drawDistrict(data)
         {
             map.fitBounds(e.target.getBounds());
             clearMap();
+            currentLevel = 2;
             get("/get_forestry_from_district/"+value["rdlp_id"].toString()+"/"+value["district_id"].toString(), drawForestry)
         });
 
@@ -227,8 +286,11 @@ function drawRDLP(data)
 
         polygon.on('click', function(e)
         {
+            currentZoom = e.target.getBounds();
             map.fitBounds(e.target.getBounds());
             clearMap();
+            currentId = value["id"].toString();
+            currentLevel = 1;
             get("/get_district_from_rdlp/"+value["id"].toString(), drawDistrict)
         });
 

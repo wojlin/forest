@@ -20,8 +20,152 @@
     right:0;
     top:0;
     bottom:0;
+    z-index: 1;
 }
 
+
+
+.overlay {
+	position: absolute;
+	width: 1000vw !important;
+	height: 1000vh !important;
+	background-color: rgba(207, 178, 156, 0.6);
+	left: -100vw;
+	right: 0;
+	top: -100vw;
+	bottom: 0;
+	padding: 0;
+	margin: 0;
+	pointer-events: none;
+}
+
+.overlay2 {
+	position: absolute;
+	width: 1000vw !important;
+	height: 1000vh !important;
+	left: -100vw;
+	right: 0;
+	top: -100vw;
+	bottom: 0;
+	padding: 0;
+	margin: 0;
+	background-image: url('/static/images/dots.svg');
+    background-repeat: repeat;
+    user-select:none;
+    pointer-events:none;
+}
+
+
+#map-title
+{
+    position:absolute;
+    left:0;
+    right:0;
+    top:3vh;
+    width:fit-content;
+    margin:auto;
+    z-index:  203;
+    pointer-events: none;
+}
+
+#map-title-ribbon
+{
+    font-family: 'medieval2';
+    font-size: 4vh;
+    border: none;
+    box-shadow: none;
+    color:black;
+    text-align:center;
+    width:50vh;
+    height:20vh;
+    background: rgba(0,0,0,0);
+    background-image: url('/static/images/ribbon4.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    transform:scale(1);
+    transition: all 0.2s;
+    position:relative:
+    z-index: 204;
+    user-select:none;
+
+}
+
+#go-back-button
+{
+    font-family: 'medieval2';
+    background: rgba(0,0,0,0);
+    transform:scale(1);
+    opacity:1;
+    transition: all 0.2s;
+    font-size: 5vh;
+    border: none;
+    box-shadow: none;
+    color:black;
+    text-align:center;
+    width:8vh;
+    height:8vh;
+    z-index:624;
+    position:absolute;
+    left:41%;
+    bottom: 3.5vh;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+#go-back-button:hover
+{
+    transform:scale(1.2);
+    opacity:0.8;
+}
+
+
+#go-back-button:active
+{
+    transform:scale(0.7);
+    opacity:0.4;
+}
+
+#info
+{
+    font-family: 'medieval2';
+    font-size: 1.7vh;
+    border: none;
+    box-shadow: none;
+    color:black;
+    text-align:center;
+    width:40vh;
+    height:50vh;
+
+    background: rgba(0,0,0,0);
+    background-image: url('/static/images/scroll.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position:absolute;
+    z-index: 204;
+    user-select:none;
+    left:0vh;
+    top:2vh;
+
+}
+
+#info-table
+{
+position:relative;
+margin-left:9vh;
+width:55%;
+margin-top:4vh;
+border-collapse: collapse;
+}
+
+.info-th, .info-td
+{
+border-bottom: 1px solid black;
+padding: 0.3vh;
+text-align: left;
+
+}
 
 .forest-tooltip
 {
@@ -48,16 +192,31 @@
     height:5.5vh;
 }
 
+
+.title-text
+{
+    position: absolute;
+	left: 0;
+	right: 0;
+	top: 1vh;
+	user-select:none;
+    pointer-events:none;
+}
+
+
 .curved-text
 {
 	position: absolute;
 	left: 0;
 	right: 0;
 	top: -0.5vh;
+	user-select:none;
+    pointer-events:none;
 }
 
 .text-path {
   fill: transparent;
+  stroke: none;
 
 }
 

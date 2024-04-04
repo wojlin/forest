@@ -41,7 +41,6 @@ class web:
                 if int(rdlp.id) == int(rdlp_id):
                     for district in rdlp.children:
                         if int(district.district_id) == int(district_id):
-                            print(len(district.children))
                             data = {}
                             for i, element in enumerate(district.children):
                                 data[i] = element.json()
