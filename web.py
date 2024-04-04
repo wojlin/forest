@@ -48,3 +48,19 @@ class web:
                             return jsonify(data)
 
             return jsonify({"status": "error"})
+
+        @self.app.route('/get_sector_from_forestry/<rdlp_id>/<district_id>/<forestry_id>')
+        def get_sector_from_forestry(rdlp_id: int, district_id: int, forestry_id: int):
+            for rdlp in self.forest.rdlp_data:
+                if int(rdlp.id) == int(rdlp_id):
+                    for district in rdlp.children:
+                        if int(district.district_id) == int(district_id):
+                            for forestry in district.children:
+                                if int(forestry.forestry_id) == int(forestry_id):
+                                    data = {}
+                                    for i, element in enumerate(forestry.children):
+                                        data[i] = element.json()
+
+                                    return jsonify(data)
+
+            return jsonify({"status": "error"})

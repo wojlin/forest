@@ -1,3 +1,5 @@
+import time
+
 import requests
 import json
 
@@ -25,14 +27,31 @@ class Fetcher(metaclass=SingletonMeta):
 
     def __init__(self):
         self.requests_done = 0
+        self.__max_retry = 10
+        self.__retry_wait = 1
 
     def get(self, url: str, good_status: int = 200):
+        self.requests_done += 1
+
+        for x in range(self.__max_retry):
+            try:
+                request = requests.get(url)
+                if not request.status_code == good_status:
+                    time.sleep(self.__retry_wait)
+                    continue
+                return json.loads(request.content)
+            except Exception:
+                continue
+
+        raise ConnectionError(f"request \"{url}\" failed")
+
+    def raw_get(self, url: str, good_status: int = 200):
         self.requests_done += 1
         request = requests.get(url)
         if not request.status_code == good_status:
             raise ConnectionError(f"request \"{url}\" returned status code \"{request.status_code}\"")
 
-        return json.loads(request.content)
+        return request.content
 
     @staticmethod
     def print(json_data: dict):

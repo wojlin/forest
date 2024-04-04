@@ -42,20 +42,17 @@ class ForestData(metaclass=SingletonMeta):
         self.logger.info("loading rdlp data...")
         self.__rdlp = self.get_rdlp()
 
-
-
-
         self.logger.info("loading district data...")
         self.__district = self.get_district()
 
         self.logger.info("loading forestry data...")
         self.__forestry = self.get_forestry()
 
+        self.logger.info("loading sectors data...")
+        self.__sectors = self.get_sectors()
+
         self.logger.info("connecting data points...")
         self.connect_data_points()
-
-        self.logger.info("loading sectors data...")
-        #self.__sectors = self.get_sectors()
 
         self.logger.info("all data is ready!")
         
@@ -68,6 +65,8 @@ class ForestData(metaclass=SingletonMeta):
         task_id = progress.add_task("", total=amount)
 
         with progress:
+
+
             for forestry in self.__forestry:
                 for district in self.__district:
 
@@ -340,7 +339,7 @@ class ForestData(metaclass=SingletonMeta):
         all_sectors: Dict[str, List[Sector]] = {}
 
         for rdlp in self.__rdlp:
-            name: str = unidecode(f"RDLP_{rdlp.name.lower().title()}_wydzielenia")
+            name: str = unidecode(f"RDLP_{rdlp.name.lower().title().replace(' ', '_')}_wydzielenia")
             root = os.path.dirname(os.path.abspath(__file__))
             path = f"{root}/database/{name}.json"
 

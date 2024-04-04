@@ -260,3 +260,7 @@ class Sector:
     @property
     def sector_name(self):
         return self.__sector_name
+
+    @property
+    def geometry(self):
+        return self.__geometry
