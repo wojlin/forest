@@ -16,10 +16,11 @@ class ForestData(metaclass=SingletonMeta):
         self.__cols_amount = 20
         self.__format = '{percentage:.0f}%|{bar}| {n_fmt}/{total_fmt} Elements | Elapsed: {elapsed} | Remaining: {remaining}'
 
-        self.__rdlp: List[RDLP] = []
-        self.__district: List[ForestDistrict] = []
-        self.__forestry: List[Forestry] = []
+        self.__rdlp: Dict[str, ForestDistrict] = {}
+        self.__district: Dict[str, ForestDistrict] = {}
+        self.__forestry: Dict[str, ForestDistrict] = {}
         self.__sectors: Dict[str, List[Sector]] = {}
+
 
 
     @property
@@ -59,7 +60,7 @@ class ForestData(metaclass=SingletonMeta):
 
 
     def connect_data_points(self):
-        amount = len(self.__forestry) * len(self.__district) + len(self.__district) * len(self.__rdlp)
+        amount = len(self.__forestry) * len(self.__district)
         done = 0
         progress = Progress()
         task_id = progress.add_task("", total=amount)
@@ -67,36 +68,52 @@ class ForestData(metaclass=SingletonMeta):
         with progress:
 
 
-            for forestry in self.__forestry:
-                for district in self.__district:
+            for forestry in self.__forestry.values():
+                for district in self.__district.values():
 
                     progress_percentage = (done + 1) / amount
                     bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
                     bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
                     done += 1
                     progress.update(task_id, advance=1,
-                                    description=f"[white]{'processing data:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
+                                    description=f"[white]{'processing forestry:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
                                     bar_style=bar_style)
 
                     if int(district.rdlp_id) == int(forestry.rdlp_id):
                         if int(district.district_id) == int(forestry.district_id):
                             district.children.append(forestry)
 
-            for rdlp in self.__rdlp:
-                for district in self.__district:
+        amount = len(self.__district) * len(self.__rdlp)
+        done = 0
+        progress = Progress()
+        task_id = progress.add_task("", total=amount)
+        with progress:
+            for rdlp in self.__rdlp.values():
+                for district in self.__district.values():
 
                     progress_percentage = (done + 1) / amount
                     bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
                     bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
                     done += 1
                     progress.update(task_id, advance=1,
-                                    description=f"[white]{'processing data:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
+                                    description=f"[white]{'processing districts:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
                                     bar_style=bar_style)
 
                     if int(rdlp.id) == int(district.rdlp_id):
                         rdlp.children.append(district)
 
-    def get_rdlp(self) -> List[RDLP]:
+
+        amount = len(self.__sectors.items())
+        done = 0
+        progress = Progress()
+        task_id = progress.add_task("", total=amount)
+        with progress:
+            pass
+
+
+
+
+    def get_rdlp(self) -> Dict[str, RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
         path = f"{root}/database/rdlp.json"
         if os.path.isfile(path):
@@ -104,7 +121,7 @@ class ForestData(metaclass=SingletonMeta):
                 with open(path, 'r') as file:
                     data: dict = json.loads(file.read())
                     amount = len(data)
-                    rdlp = []
+                    rdlp = {}
 
 
 
@@ -116,7 +133,8 @@ class ForestData(metaclass=SingletonMeta):
                             bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
                             bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
                             i = str(i)
-                            rdlp.append(RDLP(data[i]["name"], data[i]["id"]))
+                            new_rdlp = RDLP(data[i]["name"], data[i]["id"])
+                            rdlp[new_rdlp.id] = new_rdlp
                             progress.update(task_id, advance=1,
                                             description=f"[white]{'processing rdlp:'.ljust(self.__cols_amount)} {bar_style}{int(i) + 1}[white]/[green]{amount}",
                                             bar_style=bar_style)
@@ -133,7 +151,7 @@ class ForestData(metaclass=SingletonMeta):
             "https://ogcapi.bdl.lasy.gov.pl/collections/rdlp/items?f=json&lang=en-US&skipGeometry=true")
 
         amount = len(content["features"])
-        rdlp = []
+        rdlp = {}
 
         progress = Progress()
         task_id = progress.add_task("", total=amount)
@@ -149,13 +167,14 @@ class ForestData(metaclass=SingletonMeta):
                                 bar_style=bar_style)
 
                 item = content["features"][i]
-                rdlp.append(RDLP(item['properties']['region_name'], int(item['properties']['region_cd'])))
+                new_rdlp = RDLP(item['properties']['region_name'], int(item['properties']['region_cd']))
+                rdlp[new_rdlp.id] = new_rdlp
 
 
 
         data_to_save = {}
         iter = 0
-        for item in rdlp:
+        for item in rdlp.values():
             data_to_save[iter] = {"name": item.name, "id": item.id}
             iter+=1
 
@@ -166,7 +185,7 @@ class ForestData(metaclass=SingletonMeta):
 
         return rdlp
 
-    def get_district(self) -> List[ForestDistrict]:
+    def get_district(self) -> Dict[str, ForestDistrict]:
         root = os.path.dirname(os.path.abspath(__file__))
         path = f"{root}/database/district.json"
         if os.path.isfile(path):
@@ -174,7 +193,7 @@ class ForestData(metaclass=SingletonMeta):
                 with open(path, 'r') as file:
                     data = json.loads(file.read())
                     amount = len(data)
-                    district = []
+                    district = {}
 
                     progress = Progress()
                     task_id = progress.add_task("", total=amount)
@@ -190,8 +209,11 @@ class ForestData(metaclass=SingletonMeta):
                                             bar_style=bar_style)
 
                             i = str(i)
-                            district.append(ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["district_id"],
-                                                           data[str(i)]["rdlp_id"]))
+
+                            new_district = ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["district_id"],
+                                           data[str(i)]["rdlp_id"])
+                            key = f"{new_district.rdlp_id}-{new_district.district_id}"
+                            district[key] = new_district
 
 
 
@@ -205,7 +227,7 @@ class ForestData(metaclass=SingletonMeta):
                                 "?f=json&lang=en-US&limit=10000&skipGeometry=true&offset=0")
 
         amount = len(content["features"])
-        district = []
+        district = {}
 
         progress = Progress()
         task_id = progress.add_task("", total=amount)
@@ -221,15 +243,17 @@ class ForestData(metaclass=SingletonMeta):
                                 bar_style=bar_style)
 
                 data = content["features"][i]["properties"]
-                district.append(
-                    ForestDistrict(data["inspectorate_name"], content["features"][i]["id"], data["inspectorate_cd"],
-                                   data["region_cd"]))
+                new_district = ForestDistrict(data["inspectorate_name"], content["features"][i]["id"], data["inspectorate_cd"],
+                                   data["region_cd"])
+
+                key = f"{new_district.rdlp_id}-{new_district.district_id}"
+                district[key] = new_district
 
 
 
         data_to_save = {}
         iter = 0
-        for item in district:
+        for item in district.values():
             data_to_save[iter] = {"name": item.name,
                                           "id": item.id,
                                           "district_id": item.district_id,
@@ -243,7 +267,7 @@ class ForestData(metaclass=SingletonMeta):
 
         return district
 
-    def get_forestry(self) -> List[Forestry]:
+    def get_forestry(self) -> Dict[str, Forestry]:
         root = os.path.dirname(os.path.abspath(__file__))
         path = f"{root}/database/forestry.json"
         if os.path.isfile(path):
@@ -251,7 +275,7 @@ class ForestData(metaclass=SingletonMeta):
                 with open(path, 'r') as file:
                     data = json.loads(file.read())
                     amount = len(data)
-                    forestry = []
+                    forestry = {}
 
                     progress = Progress()
                     task_id = progress.add_task("", total=amount)
@@ -272,7 +296,10 @@ class ForestData(metaclass=SingletonMeta):
                             rdlp_id = data[i]["rdlp_id"]
                             district_id = data[i]["district_id"]
                             forestry_id = data[i]["forestry_id"]
-                            forestry.append(Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id))
+
+                            new_forestry = Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id)
+                            key = f"{new_forestry.rdlp_id}-{new_forestry.district_id}-{new_forestry.forestry_id}"
+                            forestry[key] = new_forestry
 
 
                     return forestry
@@ -285,7 +312,7 @@ class ForestData(metaclass=SingletonMeta):
                                 "?f=json&lang=en-US&limit=10000&skipGeometry=true&offset=0")
 
         amount = len(content["features"])
-        forestry = []
+        forestry = {}
 
         progress = Progress()
         task_id = progress.add_task("", total=amount)
@@ -313,13 +340,15 @@ class ForestData(metaclass=SingletonMeta):
                 district_id = int(address[1])
                 forestry_id = int(str(address[2]) + str(address[3]))
 
-                forestry.append(Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id))
 
+                new_forestry = Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id)
+                key = f"{new_forestry.rdlp_id}-{new_forestry.district_id}-{new_forestry.forestry_id}"
+                forestry[key] = new_forestry
 
 
         data_to_save = {}
         iter = 0
-        for item in forestry:
+        for item in forestry.values():
             data_to_save[iter] = {"name": item.name,
                                           "id": item.id,
                                           "district_id": item.district_id,
@@ -334,12 +363,14 @@ class ForestData(metaclass=SingletonMeta):
 
         return forestry
 
+    def normalize_rdlp_name(self, name: str):
+        return unidecode(f"RDLP_{name.lower().title().replace(' ', '_')}_wydzielenia")
     def get_sectors(self) -> Dict[str, List[Sector]]:
 
         all_sectors: Dict[str, List[Sector]] = {}
 
-        for rdlp in self.__rdlp:
-            name: str = unidecode(f"RDLP_{rdlp.name.lower().title().replace(' ', '_')}_wydzielenia")
+        for rdlp in self.__rdlp.values():
+            name: str = self.normalize_rdlp_name(rdlp.name)
             root = os.path.dirname(os.path.abspath(__file__))
             path = f"{root}/database/{name}.json"
 
@@ -364,7 +395,39 @@ class ForestData(metaclass=SingletonMeta):
                                 progress.update(task_id, advance=1,
                                                 description=f"[white]{'processing forestry:'.ljust(self.__cols_amount)} {bar_style}{i + 1}[white]/[green]{amount}",
                                                 bar_style=bar_style)
-                                sectors[name].append(data[name][i])
+
+                                item = data[name][i]
+
+
+                                sector_name = item["sector_name"]
+                                item_id = item["id"]
+                                silvicult = item["silvicult"]
+                                area_type = item["area_type"]
+                                stand_stru = item["stand_structure"]
+                                species_cd = item["spiecies"]
+                                spec_age = item["species_age"]
+                                adr_for = item["address"]
+                                site_type = item["site_type"]
+                                forest_fun = item["forest_function"]
+                                rotat_age = item["rotation_age"]
+                                a_year = item["year"]
+                                geometry = item["geometry"]
+
+                                sector = Sector(sector_name=sector_name,
+                                                id=item_id,
+                                                address=adr_for,
+                                                silvicult=silvicult,
+                                                area_type=area_type,
+                                                site_type=site_type,
+                                                stand_structure=stand_stru,
+                                                forest_function=forest_fun,
+                                                species=species_cd,
+                                                species_age=spec_age,
+                                                rotat_age=rotat_age,
+                                                year=a_year,
+                                                geometry=geometry)
+
+                                sectors[name].append(sector)
                         all_sectors[name] = sectors[name]
                     continue
 

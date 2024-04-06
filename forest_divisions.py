@@ -222,6 +222,10 @@ class Sector:
         self.__year = year # rok w którym zostały sporządzone dane
         self.__geometry = geometry
 
+        # self.__address
+        # example:   03  -  02  -  1  -  01  -  1     -a   -00
+        #            ^      ^
+        #          rdlp    district
 
     def __repr__(self):
         data = ""
@@ -240,6 +244,19 @@ class Sector:
         data += f"geometry:  {self.__geometry}\n"
         data += f"#############################\n"
         return data
+
+    @property
+    def rdlp_id(self):
+        return self.__address.split('-')[0]
+
+    @property
+    def district_id(self):
+        return self.__address.split('-')[1]
+
+    @property
+    def forestry_id(self):
+        return str(self.__address.split('-')[2]) + str(self.__address.split('-')[3])
+
     @property
     def json(self):
         return {"sector_name": self.__sector_name,
