@@ -246,6 +246,10 @@ class Sector:
         return data
 
     @property
+    def address(self):
+        return self.__address
+
+    @property
     def rdlp_id(self):
         return self.__address.split('-')[0]
 

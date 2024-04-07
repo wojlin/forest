@@ -12,7 +12,7 @@ from utils import Fetcher, SingletonMeta
 
 class ForestData(metaclass=SingletonMeta):
     def __init__(self):
-        self.logger = logging.getLogger("forest")
+        self.__logger = logging.getLogger("forest")
         self.__cols_amount = 20
         self.__format = '{percentage:.0f}%|{bar}| {n_fmt}/{total_fmt} Elements | Elapsed: {elapsed} | Remaining: {remaining}'
 
@@ -21,7 +21,7 @@ class ForestData(metaclass=SingletonMeta):
         self.__forestry: Dict[str, ForestDistrict] = {}
         self.__sectors: Dict[str, List[Sector]] = {}
 
-
+        self.__load_forest_data()
 
     @property
     def rdlp_data(self):
@@ -39,27 +39,35 @@ class ForestData(metaclass=SingletonMeta):
     def sectors_data(self):
         return self.__sectors
 
-    def load_forest_data(self):
-        self.logger.info("loading rdlp data...")
-        self.__rdlp = self.get_rdlp()
+    def __save_pickle(self):
+        pass
+        #with open("save.p", "wb") as file:
+        #    pickle.dump(self, file)
 
-        self.logger.info("loading district data...")
-        self.__district = self.get_district()
+    def __load_pickle(self):
+        #with open("save.p", "rb") as f:
+        #    self = pickle.load(f)
+        pass
 
-        self.logger.info("loading forestry data...")
-        self.__forestry = self.get_forestry()
+    def __load_forest_data(self):
+        self.__logger.info("loading rdlp data...")
+        self.__rdlp = self.__load_rdlp()
 
-        self.logger.info("loading sectors data...")
-        self.__sectors = self.get_sectors()
+        self.__logger.info("loading district data...")
+        self.__district = self.__load_district()
 
-        self.logger.info("connecting data points...")
-        self.connect_data_points()
+        self.__logger.info("loading forestry data...")
+        self.__forestry = self.__load_forestry()
 
-        self.logger.info("all data is ready!")
-        
+        self.__logger.info("loading sectors data...")
+        self.__sectors = self.__load_sectors()
 
+        self.__logger.info("connecting data points...")
+        self.__connect_data_points()
 
-    def connect_data_points(self):
+        self.__logger.info("all data is ready!")
+
+    def __connect_data_points(self):
         amount = len(self.__forestry) * len(self.__district)
         done = 0
         progress = Progress()
@@ -103,17 +111,43 @@ class ForestData(metaclass=SingletonMeta):
                         rdlp.children.append(district)
 
 
-        amount = len(self.__sectors.items())
+        amount = sum([len(sector) for sector in self.__sectors.values()])
         done = 0
+        missing = 0
         progress = Progress()
         task_id = progress.add_task("", total=amount)
         with progress:
-            pass
 
+            progress_percentage = (done + 1) / amount
+            bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+            bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+            progress.update(task_id, advance=0,
+                            description=f"[white]{'processing sectors:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
+                            bar_style=bar_style)
 
+            for name, sectors in self.__sectors.items():
+                for sector in sectors:
+                    key = f"{int(sector.rdlp_id)}-{int(sector.district_id)}-{int(sector.forestry_id)}"
+                    if key in self.__forestry:
+                        self.__forestry[key].children.append(sector)
+                    else:
+                        missing += 1
 
+                    progress_percentage = (done + 1) / amount
+                    bar_style = "[yellow]" if progress_percentage >= 0.5 else "[red]"
+                    bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
+                    done += 1
+                    progress.update(task_id, advance=1,
+                                    description=f"[white]{'processing sectors:'.ljust(self.__cols_amount)} {bar_style}{int(done) + 1}[white]/[green]{amount}",
+                                    bar_style=bar_style)
 
-    def get_rdlp(self) -> Dict[str, RDLP]:
+            self.__logger.warning(f"{missing} missing sectors found!")
+
+    @staticmethod
+    def __normalize_rdlp_name(name: str):
+        return unidecode(f"RDLP_{name.lower().title().replace(' ', '_')}_wydzielenia")
+
+    def __load_rdlp(self) -> Dict[str, RDLP]:
         root = os.path.dirname(os.path.abspath(__file__))
         path = f"{root}/database/rdlp.json"
         if os.path.isfile(path):
@@ -134,18 +168,17 @@ class ForestData(metaclass=SingletonMeta):
                             bar_style = "[green]" if progress_percentage >= 0.8 else bar_style
                             i = str(i)
                             new_rdlp = RDLP(data[i]["name"], data[i]["id"])
-                            rdlp[new_rdlp.id] = new_rdlp
+                            rdlp[str(int(new_rdlp.id))] = new_rdlp
                             progress.update(task_id, advance=1,
                                             description=f"[white]{'processing rdlp:'.ljust(self.__cols_amount)} {bar_style}{int(i) + 1}[white]/[green]{amount}",
                                             bar_style=bar_style)
 
-
-
                     return rdlp
+
             except Exception as e:
                 print(traceback.format_exc())
 
-        self.logger.warning("rdlp information is missing. fetching resource...")
+        self.__logger.warning("rdlp information is missing. fetching resource...")
 
         content = Fetcher().get(
             "https://ogcapi.bdl.lasy.gov.pl/collections/rdlp/items?f=json&lang=en-US&skipGeometry=true")
@@ -168,7 +201,7 @@ class ForestData(metaclass=SingletonMeta):
 
                 item = content["features"][i]
                 new_rdlp = RDLP(item['properties']['region_name'], int(item['properties']['region_cd']))
-                rdlp[new_rdlp.id] = new_rdlp
+                rdlp[str(int(new_rdlp.id))] = new_rdlp
 
 
 
@@ -181,11 +214,11 @@ class ForestData(metaclass=SingletonMeta):
         with open(path, 'w', encoding='utf-8') as file:
             json.dump(data_to_save, file, indent=4, ensure_ascii=False)
 
-        self.logger.warning("rdlp information fetched!")
+        self.__logger.warning("rdlp information fetched!")
 
         return rdlp
 
-    def get_district(self) -> Dict[str, ForestDistrict]:
+    def __load_district(self) -> Dict[str, ForestDistrict]:
         root = os.path.dirname(os.path.abspath(__file__))
         path = f"{root}/database/district.json"
         if os.path.isfile(path):
@@ -212,16 +245,13 @@ class ForestData(metaclass=SingletonMeta):
 
                             new_district = ForestDistrict(data[str(i)]["name"], data[str(i)]["id"], data[str(i)]["district_id"],
                                            data[str(i)]["rdlp_id"])
-                            key = f"{new_district.rdlp_id}-{new_district.district_id}"
+                            key = f"{int(new_district.rdlp_id)}-{int(new_district.district_id)}"
                             district[key] = new_district
-
-
-
                     return district
             except Exception as e:
                 print(traceback.format_exc())
 
-        self.logger.warning("district information is missing. fetching resource...")
+        self.__logger.warning("district information is missing. fetching resource...")
 
         content = Fetcher().get("https://ogcapi.bdl.lasy.gov.pl/collections/nadlesnictwa/items"
                                 "?f=json&lang=en-US&limit=10000&skipGeometry=true&offset=0")
@@ -246,7 +276,7 @@ class ForestData(metaclass=SingletonMeta):
                 new_district = ForestDistrict(data["inspectorate_name"], content["features"][i]["id"], data["inspectorate_cd"],
                                    data["region_cd"])
 
-                key = f"{new_district.rdlp_id}-{new_district.district_id}"
+                key = f"{int(new_district.rdlp_id)}-{int(new_district.district_id)}"
                 district[key] = new_district
 
 
@@ -263,11 +293,11 @@ class ForestData(metaclass=SingletonMeta):
         with open(path, 'w', encoding='utf-8') as file:
             json.dump(data_to_save, file, indent=4, ensure_ascii=False)
 
-        self.logger.warning("district information fetched!")
+        self.__logger.warning("district information fetched!")
 
         return district
 
-    def get_forestry(self) -> Dict[str, Forestry]:
+    def __load_forestry(self) -> Dict[str, Forestry]:
         root = os.path.dirname(os.path.abspath(__file__))
         path = f"{root}/database/forestry.json"
         if os.path.isfile(path):
@@ -298,7 +328,7 @@ class ForestData(metaclass=SingletonMeta):
                             forestry_id = data[i]["forestry_id"]
 
                             new_forestry = Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id)
-                            key = f"{new_forestry.rdlp_id}-{new_forestry.district_id}-{new_forestry.forestry_id}"
+                            key = f"{int(new_forestry.rdlp_id)}-{int(new_forestry.district_id)}-{int(new_forestry.forestry_id)}"
                             forestry[key] = new_forestry
 
 
@@ -306,7 +336,7 @@ class ForestData(metaclass=SingletonMeta):
             except Exception as e:
                 print(traceback.format_exc())
 
-        self.logger.warning("forestry information is missing. fetching resource...")
+        self.__logger.warning("forestry information is missing. fetching resource...")
 
         content = Fetcher().get("https://ogcapi.bdl.lasy.gov.pl/collections/lesnictwa/items"
                                 "?f=json&lang=en-US&limit=10000&skipGeometry=true&offset=0")
@@ -342,7 +372,7 @@ class ForestData(metaclass=SingletonMeta):
 
 
                 new_forestry = Forestry(forestry_name, item_id, rdlp_id, district_id, forestry_id)
-                key = f"{new_forestry.rdlp_id}-{new_forestry.district_id}-{new_forestry.forestry_id}"
+                key = f"{int(new_forestry.rdlp_id)}-{int(new_forestry.district_id)}-{int(new_forestry.forestry_id)}"
                 forestry[key] = new_forestry
 
 
@@ -359,24 +389,22 @@ class ForestData(metaclass=SingletonMeta):
         with open(path, 'w', encoding='utf-8') as file:
             json.dump(data_to_save, file, indent=4, ensure_ascii=False)
 
-        self.logger.warning("forestry information fetched!")
+        self.__logger.warning("forestry information fetched!")
 
         return forestry
 
-    def normalize_rdlp_name(self, name: str):
-        return unidecode(f"RDLP_{name.lower().title().replace(' ', '_')}_wydzielenia")
-    def get_sectors(self) -> Dict[str, List[Sector]]:
+    def __load_sectors(self) -> Dict[str, List[Sector]]:
 
         all_sectors: Dict[str, List[Sector]] = {}
 
         for rdlp in self.__rdlp.values():
-            name: str = self.normalize_rdlp_name(rdlp.name)
+            name: str = self.__normalize_rdlp_name(rdlp.name)
             root = os.path.dirname(os.path.abspath(__file__))
             path = f"{root}/database/{name}.json"
 
             ### read
             if os.path.isfile(path):
-                self.logger.warning(f"reading {name} data...")
+                self.__logger.warning(f"reading {name} data...")
                 try:
                     with open(path, 'r') as file:
                         data = json.loads(file.read())
@@ -436,7 +464,7 @@ class ForestData(metaclass=SingletonMeta):
 
             ### fetch
 
-            self.logger.warning(f"sectors information for {name} is missing. fetching resource...")
+            self.__logger.warning(f"sectors information for {name} is missing. fetching resource...")
 
 
             sectors = {name: []}
@@ -515,10 +543,10 @@ class ForestData(metaclass=SingletonMeta):
                 json.dump(data_to_save, file, indent=4, ensure_ascii=False)
 
             all_sectors[name] = list(sectors[name])
-            self.logger.warning(f"fetched sectors for {name}!")
+            self.__logger.warning(f"fetched sectors for {name}!")
 
 
-        self.logger.warning("sectors information fetched!")
+        self.__logger.warning("sectors information fetched!")
 
 
         return all_sectors

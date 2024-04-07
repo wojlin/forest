@@ -1,5 +1,6 @@
 import logging
 import colorlog
+import time
 
 from forest_data import ForestData
 from utils import Fetcher
@@ -29,19 +30,17 @@ def setup_logging():
     logger.addHandler(console_handler)
 
 
-
 if __name__ == "__main__":
     setup_logging()
+    logger = logging.getLogger("forest")
 
+    logger.info(f"loading forest data...")
+    start_time = time.time()
     forest = ForestData()
-
-    forest.load_forest_data()
+    end_time = time.time()
+    logger.info(f"loading forest data took {round(end_time - start_time,2)} seconds")
+    logger.info(f"starting web server...")
 
     web(forest)
-
-
-    #sectors = forest.get_sectors()
-
-    #print(Fetcher().requests_done)
 
 
