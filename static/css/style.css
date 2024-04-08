@@ -126,10 +126,16 @@
     opacity:0.4;
 }
 
+#info-name
+{
+    font-size: 3vh;
+    margin-top: 1vh;
+}
+
 #info
 {
     font-family: 'medieval2';
-    font-size: 1.7vh;
+    font-size: 1.5vh;
     border: none;
     box-shadow: none;
     color:black;
@@ -146,7 +152,8 @@
     z-index: 204;
     user-select:none;
     left:0vh;
-    top:2vh;
+    top:0.5vh;
+    display:none;
 
 }
 

@@ -58,9 +58,28 @@ class web:
                             for forestry in district.children:
                                 if int(forestry.forestry_id) == int(forestry_id):
                                     data = {}
-                                    for i, element in enumerate(forestry.children.items):
-                                        data[i] = element.json()
+                                    for i, element in enumerate(forestry.children):
+                                        data[i] = element.json
 
                                     return jsonify(data)
+
+            return jsonify({"status": "error"})
+
+        @self.app.route('/display_sector/<address>')
+        def display_sector(address: str):
+            rdlp_id = int(address.split("-")[0])
+            district_id = int(address.split("-")[1])
+            forestry_id = int(address.split("-")[2])
+            for rdlp in self.forest.rdlp_data.values():
+                if rdlp.id == rdlp_id:
+                    name = self.forest.normalize_rdlp_name(rdlp.name)
+                    sectors = self.forest.sectors_data[name]
+                    for sector in sectors:
+                        if sector.address == address:
+                            data = sector.json
+                            data["rdlp"] = rdlp.name
+                            data["district"] = self.forest.district_data[f"{rdlp_id}-{district_id}"]
+                            data["forestry"] = self.forest.district_data[f"{rdlp_id}-{district_id}-{forestry_id}"]
+                            return data
 
             return jsonify({"status": "error"})

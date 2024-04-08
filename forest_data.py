@@ -144,7 +144,7 @@ class ForestData(metaclass=SingletonMeta):
             self.__logger.warning(f"{missing} missing sectors found!")
 
     @staticmethod
-    def __normalize_rdlp_name(name: str):
+    def normalize_rdlp_name(name: str):
         return unidecode(f"RDLP_{name.lower().title().replace(' ', '_')}_wydzielenia")
 
     def __load_rdlp(self) -> Dict[str, RDLP]:
@@ -398,7 +398,7 @@ class ForestData(metaclass=SingletonMeta):
         all_sectors: Dict[str, List[Sector]] = {}
 
         for rdlp in self.__rdlp.values():
-            name: str = self.__normalize_rdlp_name(rdlp.name)
+            name: str = self.normalize_rdlp_name(rdlp.name)
             root = os.path.dirname(os.path.abspath(__file__))
             path = f"{root}/database/{name}.json"
 

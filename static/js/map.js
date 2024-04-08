@@ -57,7 +57,17 @@ function go_back()
         map.fitBounds(currentZoom, true);
         map.setZoom(z);
         get("/get_district_from_rdlp/" + currentId, drawDistrict);
-    }else
+    }
+    else if(currentLevel == 2)
+    {
+        clearMap();
+        var z = map.getBoundsZoom(currentZoom);
+        console.log(map.getZoom(),z)
+        map.fitBounds(currentZoom, true);
+        map.setZoom(z);
+        get("/get_forestry_from_district/" + currentId, drawForestry);
+    }
+    else
     {
         console.log("too high level!")
     }
@@ -78,6 +88,87 @@ function get(url, callback)
 }
 
 
+function displaySector(data)
+{
+    data = JSON.parse(data);
+    console.log(data);
+
+    let info = document.getElementById("info");
+    info.style.display = "block";
+
+    let table = info.childNodes[1];
+
+    table.childNodes[1].childNodes[0].childNodes[1].innerHTML = data["rdlp"];
+
+
+}
+
+function drawSector(data)
+{
+    data = JSON.parse(data);
+
+    console.log(data);
+
+    var style =  {
+        fillColor: '#e6c16c',
+        weight: 2,
+        opacity: 0.3,
+        color: 'black',
+        dashArray: '1',
+        fillOpacity: 0.6
+    };
+
+    var tooltipStyle =
+    {
+        permanent: true,
+        direction:"center",
+        className: 'forest-tooltip'
+    };
+
+
+    for (const [key, value] of Object.entries(data))
+    {
+
+
+        for(let i = 0; i < value["geometry"].length; i++)
+        {
+            let save = value["geometry"][i][0];
+            value["geometry"][i][0] = value["geometry"][i][1];
+            value["geometry"][i][1] = save;
+        }
+
+
+
+        let polygon = L.polygon(value["geometry"], style).addTo(map);
+
+
+        polygon.on('click', function(e)
+        {
+            //map.fitBounds(e.target.getBounds());
+            //clearMap();
+            //currentLevel = 3;
+            get("/display_sector/"+value["address"].toString(), displaySector)
+        });
+
+        polygon.on('mouseover', function(e)
+        {
+            let layer = e.target;
+            let newStyle = {};
+            Object.assign(newStyle, style);
+            newStyle.fillOpacity = 0.9;
+            layer.setStyle(newStyle);
+
+        });
+
+        polygon.on('mouseout', function(e)
+        {
+            var layer = e.target;
+            layer.setStyle(style);
+
+        });
+
+    }
+}
 
 function drawForestry(data)
 {
@@ -129,8 +220,9 @@ function drawForestry(data)
         polygon.on('click', function(e)
         {
             map.fitBounds(e.target.getBounds());
-            //clearMap();
-            //get("/get_forestry_from_district/"+value["id"].toString(), drawDistrict)
+            clearMap();
+            currentLevel = 3;
+            get("/get_sector_from_forestry/"+value["rdlp_id"].toString()+"/"+value["district_id"].toString()+"/"+value["forestry_id"].toString(), drawSector)
         });
 
         polygon.on('mouseover', function(e)
