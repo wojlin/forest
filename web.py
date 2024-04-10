@@ -79,7 +79,7 @@ class web:
                             data = sector.json
                             data["rdlp"] = rdlp.name
                             data["district"] = self.forest.district_data[f"{rdlp_id}-{district_id}"]
-                            data["forestry"] = self.forest.district_data[f"{rdlp_id}-{district_id}-{forestry_id}"]
+                            #data["forestry"] = self.forest.district_data[f"{rdlp_id}-{district_id}-{forestry_id}"]
                             return data
 
             return jsonify({"status": "error"})

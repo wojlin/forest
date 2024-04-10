@@ -96,9 +96,24 @@ function displaySector(data)
     let info = document.getElementById("info");
     info.style.display = "block";
 
-    let table = info.childNodes[1];
+    let table = document.getElementById("info-table").rows;
+    console.log(table)
+    table[0].cells[1].innerHTML = data["rdlp"];
+    table[1].cells[1].innerHTML = data["dictrict"];
+    table[2].cells[1].innerHTML = data["forestry"];
+    table[3].cells[1].innerHTML = "not avaivle yet";
+    table[4].cells[1].innerHTML = data["id"];
+    table[5].cells[1].innerHTML = data["address"];
+    table[6].cells[1].innerHTML = data["silvicult"];
+    table[7].cells[1].innerHTML = data["area_type"];
+    table[8].cells[1].innerHTML = data["site_type"];
+    table[9].cells[1].innerHTML = data["stand_structure"];
+    table[10].cells[1].innerHTML = data["forest_function"];
+    table[11].cells[1].innerHTML = data["species"];
+    table[12].cells[1].innerHTML = data["species_age"];
+    table[13].cells[1].innerHTML = data["roatation_age"];
+    table[14].cells[1].innerHTML = data["year"];
 
-    table.childNodes[1].childNodes[0].childNodes[1].innerHTML = data["rdlp"];
 
 
 }

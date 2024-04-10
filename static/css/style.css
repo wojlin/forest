@@ -129,7 +129,8 @@
 #info-name
 {
     font-size: 3vh;
-    margin-top: 1vh;
+    margin-top: 2vh;
+    margin-bottom:0;
 }
 
 #info
@@ -162,7 +163,7 @@
 position:relative;
 margin-left:9vh;
 width:55%;
-margin-top:4vh;
+margin-top:0vh;
 border-collapse: collapse;
 }
 
