@@ -30,7 +30,13 @@ overlay2.style.pointerEvents = 'none';
 
 var currentZoom = null;
 var currentLevel = 0;
-var currentId = "";
+var currentId = ["", "", "", ""];
+var currentName = ["Lasy Polskie", "", "", ""];
+
+function setRibbonName(name)
+{
+    document.getElementById("map-title-text").innerHTML = name;
+}
 
 function go_back()
 {
@@ -47,25 +53,26 @@ function go_back()
     {
         clearMap();
         map.setView([52, 19.0], 7);
+        setRibbonName(currentName[0]);
         get("/get_rdlp", drawRDLP);
     }
     else if(currentLevel == 1)
     {
         clearMap();
         var z = map.getBoundsZoom(currentZoom);
-        console.log(map.getZoom(),z)
         map.fitBounds(currentZoom, true);
         map.setZoom(z);
-        get("/get_district_from_rdlp/" + currentId, drawDistrict);
+        setRibbonName(currentName[1]);
+        get("/get_district_from_rdlp/" + currentId[0], drawDistrict);
     }
     else if(currentLevel == 2)
     {
         clearMap();
         var z = map.getBoundsZoom(currentZoom);
-        console.log(map.getZoom(),z)
         map.fitBounds(currentZoom, true);
         map.setZoom(z);
-        get("/get_forestry_from_district/" + currentId, drawForestry);
+        setRibbonName(currentName[2]);
+        get("/get_forestry_from_district/" + currentId[0] + "/" +  + currentId[1], drawForestry);
     }
     else
     {
@@ -237,6 +244,11 @@ function drawForestry(data)
             map.fitBounds(e.target.getBounds());
             clearMap();
             currentLevel = 3;
+            setRibbonName(value["name"]);
+            currentName[3] = value["name"];
+            currentId[0] = value["rdlp_id"].toString();
+            currentId[1] = value["district_id"].toString();
+            currentId[2] = value["forestry_id"].toString();
             get("/get_sector_from_forestry/"+value["rdlp_id"].toString()+"/"+value["district_id"].toString()+"/"+value["forestry_id"].toString(), drawSector)
         });
 
@@ -317,6 +329,10 @@ function drawDistrict(data)
             map.fitBounds(e.target.getBounds());
             clearMap();
             currentLevel = 2;
+            setRibbonName(value["name"]);
+            currentName[2] = value["name"];
+            currentId[0] = value["rdlp_id"].toString();
+            currentId[1] = value["district_id"].toString();
             get("/get_forestry_from_district/"+value["rdlp_id"].toString()+"/"+value["district_id"].toString(), drawForestry)
         });
 
@@ -396,8 +412,10 @@ function drawRDLP(data)
             currentZoom = e.target.getBounds();
             map.fitBounds(e.target.getBounds());
             clearMap();
-            currentId = value["id"].toString();
+            currentId[0] = value["id"].toString();
             currentLevel = 1;
+            setRibbonName(value["name"]);
+            currentName[1] = value["name"];
             get("/get_district_from_rdlp/"+value["id"].toString(), drawDistrict)
         });
 
