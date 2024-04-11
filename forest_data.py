@@ -3,6 +3,7 @@ from unidecode import unidecode
 from typing import List, Dict
 import traceback
 import logging
+import pickle
 import json
 import os
 
@@ -15,6 +16,13 @@ class ForestData(metaclass=SingletonMeta):
         self.__logger = logging.getLogger("forest")
         self.__cols_amount = 20
         self.__format = '{percentage:.0f}%|{bar}| {n_fmt}/{total_fmt} Elements | Elapsed: {elapsed} | Remaining: {remaining}'
+
+        self.__root = os.path.dirname(os.path.abspath(__file__))
+
+        self.__pickle_path = "database/forest.pickle"
+        self.__rdlp_path = f"{self.__root}/database/rdlp.json"
+        self.__district_path = f"{self.__root}/database/district.json"
+        self.__forestry_path = f"{self.__root}/database/forestry.json"
 
         self.__rdlp: Dict[str, ForestDistrict] = {}
         self.__district: Dict[str, ForestDistrict] = {}
@@ -40,16 +48,30 @@ class ForestData(metaclass=SingletonMeta):
         return self.__sectors
 
     def __save_pickle(self):
-        pass
-        #with open("save.p", "wb") as file:
-        #    pickle.dump(self, file)
+        filename = self.__pickle_path
+        with open(filename, 'wb') as f:
+            pickle.dump(self, f)
 
-    def __load_pickle(self):
-        #with open("save.p", "rb") as f:
-        #    self = pickle.load(f)
-        pass
+    def __load_pickle(self) -> bool:
+        filename = self.__pickle_path
+        if filename and os.path.exists(filename):
+            try:
+                with open(filename, 'rb') as f:
+                    self.__logger.info("loading forest data from pickle. This process can take some time.")
+                    temp = pickle.load(f)
+                self.__dict__.update(temp.__dict__)
+                return True
+            except Exception as e:
+                self.__logger.error(f"Failed to load data: {e}")
+        return False
 
     def __load_forest_data(self):
+        if self.__load_pickle():
+            self.__logger.info("Successfully loaded forest data!")
+            return
+
+        self.__logger.info("pickle data not found. Attempting to create forest object...")
+
         self.__logger.info("loading rdlp data...")
         self.__rdlp = self.__load_rdlp()
 
@@ -66,6 +88,10 @@ class ForestData(metaclass=SingletonMeta):
         self.__connect_data_points()
 
         self.__logger.info("all data is ready!")
+
+        self.__logger.info("saving forest object to file...")
+
+        self.__save_pickle()
 
     def __connect_data_points(self):
         amount = len(self.__forestry) * len(self.__district)
@@ -148,17 +174,14 @@ class ForestData(metaclass=SingletonMeta):
         return unidecode(f"RDLP_{name.lower().title().replace(' ', '_')}_wydzielenia")
 
     def __load_rdlp(self) -> Dict[str, RDLP]:
-        root = os.path.dirname(os.path.abspath(__file__))
-        path = f"{root}/database/rdlp.json"
+
+        path = self.__rdlp_path
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
                     data: dict = json.loads(file.read())
                     amount = len(data)
                     rdlp = {}
-
-
-
 
                     with Progress() as progress:
                         task_id = progress.add_task("[red]Scraping", total=amount)
@@ -219,8 +242,7 @@ class ForestData(metaclass=SingletonMeta):
         return rdlp
 
     def __load_district(self) -> Dict[str, ForestDistrict]:
-        root = os.path.dirname(os.path.abspath(__file__))
-        path = f"{root}/database/district.json"
+        path = self.__district_path
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
@@ -298,8 +320,7 @@ class ForestData(metaclass=SingletonMeta):
         return district
 
     def __load_forestry(self) -> Dict[str, Forestry]:
-        root = os.path.dirname(os.path.abspath(__file__))
-        path = f"{root}/database/forestry.json"
+        path = self.__forestry_path
         if os.path.isfile(path):
             try:
                 with open(path, 'r') as file:
@@ -400,7 +421,7 @@ class ForestData(metaclass=SingletonMeta):
         for rdlp in self.__rdlp.values():
             name: str = self.normalize_rdlp_name(rdlp.name)
             root = os.path.dirname(os.path.abspath(__file__))
-            path = f"{root}/database/{name}.json"
+            path = f"{root}/database/sector/{name}.json"
 
             ### read
             if os.path.isfile(path):

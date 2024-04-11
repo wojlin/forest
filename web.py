@@ -60,6 +60,12 @@ class web:
                                     data = {}
                                     for i, element in enumerate(forestry.children):
                                         data[i] = element.json
+                                        data[i]["rdlp_id"] = rdlp_id
+                                        data[i]["district_id"] = district_id
+                                        data[i]["forestry_id"] = forestry_id
+                                        data[i]["rdlp_name"] = rdlp.name
+                                        data[i]["district_name"] = district.name
+                                        data[i]["forestry_name"] = forestry.name
 
                                     return jsonify(data)
 
@@ -78,8 +84,8 @@ class web:
                         if sector.address == address:
                             data = sector.json
                             data["rdlp"] = rdlp.name
-                            data["district"] = self.forest.district_data[f"{rdlp_id}-{district_id}"]
-                            #data["forestry"] = self.forest.district_data[f"{rdlp_id}-{district_id}-{forestry_id}"]
+                            data["district"] = self.forest.district_data[f"{rdlp_id}-{district_id}"].name
+                            data["forestry"] = self.forest.forestry_data[f"{rdlp_id}-{district_id}-{forestry_id}"].name
                             return data
 
             return jsonify({"status": "error"})

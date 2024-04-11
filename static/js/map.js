@@ -118,7 +118,7 @@ function displaySector(data)
     table[10].cells[1].innerHTML = data["forest_function"];
     table[11].cells[1].innerHTML = data["species"];
     table[12].cells[1].innerHTML = data["species_age"];
-    table[13].cells[1].innerHTML = data["roatation_age"];
+    table[13].cells[1].innerHTML = data["rotation_age"];
     table[14].cells[1].innerHTML = data["year"];
 
 
@@ -169,6 +169,7 @@ function drawSector(data)
             //map.fitBounds(e.target.getBounds());
             //clearMap();
             //currentLevel = 3;
+            console.log(value);
             get("/display_sector/"+value["address"].toString(), displaySector)
         });
 

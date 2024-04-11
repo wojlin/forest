@@ -1,6 +1,9 @@
 .idea/
 __pycache__/
 database/*.json
+database/*.pickle
 database/rdlp/*.geo
 database/district/*.geo
 database/forestry/*.geo
+database/sector/*.json
+forest.log
