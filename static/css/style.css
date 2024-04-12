@@ -126,6 +126,31 @@
     opacity:0.4;
 }
 
+
+#close-info-button {
+	position: absolute;
+	width: 5vh;
+	height: 5vh;
+	left: 28vh;
+	top: 1.4vh;
+	color: black;
+	z-index: 1000;
+	font-size: 3vh;
+	background: none;
+	border: none;
+	box-shadow: none;
+	transition: all 0.2s;
+	transform: scale(1);
+	opacity: 1.0;
+	cursor:pointer;
+}
+
+#close-info-button:hover
+{
+    transform: scale(1.2);
+    opacity: 0.6;
+}
+
 #info-name
 {
     font-size: 3vh;

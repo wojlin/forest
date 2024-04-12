@@ -95,6 +95,11 @@ function get(url, callback)
 }
 
 
+function title(str) {
+    if (str.length === 0) return str; // Handle empty string
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 function displaySector(data)
 {
     data = JSON.parse(data);
@@ -104,11 +109,13 @@ function displaySector(data)
     info.style.display = "block";
 
     let table = document.getElementById("info-table").rows;
-    console.log(table)
-    table[0].cells[1].innerHTML = data["rdlp"];
-    table[1].cells[1].innerHTML = data["dictrict"];
-    table[2].cells[1].innerHTML = data["forestry"];
-    table[3].cells[1].innerHTML = "not avaivle yet";
+
+    let coords = "N" + data["coordinates"]["N"] + ", E" + data["coordinates"]["E"]
+
+    table[0].cells[1].innerHTML = title(data["rdlp"]);
+    table[1].cells[1].innerHTML = title(data["district"]);
+    table[2].cells[1].innerHTML = title(data["forestry"]);
+    table[3].cells[1].innerHTML = coords;
     table[4].cells[1].innerHTML = data["id"];
     table[5].cells[1].innerHTML = data["address"];
     table[6].cells[1].innerHTML = data["silvicult"];
@@ -116,7 +123,7 @@ function displaySector(data)
     table[8].cells[1].innerHTML = data["site_type"];
     table[9].cells[1].innerHTML = data["stand_structure"];
     table[10].cells[1].innerHTML = data["forest_function"];
-    table[11].cells[1].innerHTML = data["species"];
+    table[11].cells[1].innerHTML = data["spiecies"];
     table[12].cells[1].innerHTML = data["species_age"];
     table[13].cells[1].innerHTML = data["rotation_age"];
     table[14].cells[1].innerHTML = data["year"];

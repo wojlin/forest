@@ -1,3 +1,5 @@
+from typing import List, Dict
+import math
 import logging
 import ast
 import os
@@ -262,7 +264,7 @@ class Sector:
         return str(self.__address.split('-')[2]) + str(self.__address.split('-')[3])
 
     @property
-    def json(self):
+    def json(self) -> dict:
         return {"sector_name": self.__sector_name,
                 "id": self.__id,
                 "address": self.__address,
@@ -279,9 +281,208 @@ class Sector:
                 }
 
     @property
+    def pretty_json(self) -> dict:
+
+
+
+        # https://pl.wikipedia.org/wiki/Typ_siedliskowy_lasu
+        site_types = {None: "Niezdefiniowane",
+                      'LWYŻ': "Las wyżynny",
+                      'BMŚW': "Bór mieszany świeży",
+                      'LMG': "Las mieszany górski",
+                      'OLJWYŻ': "Ols jesionowy wyżynny",
+                      'LMŚW': "Las mieszany świeży",
+                      'BŚW': "Bór świeży",
+                      'BMGŚW': "Bór mieszany górski świeży",
+                      'LMWYŻ': "Las mieszany wyżynny",
+                      'LGW': "Las górski wilgotny",
+                      'LMWYŻW': "Las mieszany wyżynny wilgotny",
+                      'BMGB': "Bór mieszany górski bagienny",
+                      'BW': "Bór wilgotny",
+                      'BMW': "Bór mieszany wilgotny",
+                      'BS': "Bór suchy",
+                      'BMGW': "Bór mieszany górski wilgotny",
+                      'LŁ': "Las łęgowy",
+                      'LMWYŻŚW': "Las Mieszany wyżynny świeży",
+                      'LW': "Las wilgotny",
+                      'BB': "Bór bagienny",
+                      'LŚW': "Las świeży",
+                      'BWG': "Bór wysokogórski",
+                      'BMB': "Bór mieszany bagienny",
+                      'LMGW': "Las mieszany górski wilgotny",
+                      'LG': "Las górski",
+                      'LWYŻŚW': "Las wyżynny świeży",
+                      'LŁG': "Las łęgowy górski",
+                      'LMGŚW': "Las mieszany górski świeży",
+                      'LŁWYŻ': "Las łegowy wyżynny",
+                      'OL': "Ols",
+                      'OLJ': "Ols jesionowy",
+                      'BGW': "Bór górski wyżynny",
+                      'BG': "Bór górski",
+                      'OLJG': "Ols jesionowy górski",
+                      'LMW': "Las mieszany wilgotny",
+                      'LMB': "Las mieszany bagienny",
+                      'LGŚW': "Las górski świeży",
+                      'BMWYŻW': "Bór mieszany wyżynny wilgotny",
+                      'BMWYŻ': "Bór mieszany wyżynny",
+                      'LWYŻW': "Las wyżynny wilgotny",
+                      'BGŚW': "Bór górski",
+                      'LWYŻŚ': "Las wyżynny świeży",
+                      'BMWYŻŚW': "Bór mieszany wyżynny świeży",
+                      'BGB': "Bór górski bagienny"}
+
+        # https://nitroerg.pl/wp-content/uploads/2019/02/PLAN-URZ%C4%84DZENIA-LASU-ZAK%C5%81AD-NITROERG-W-KRUPSKIM-M%C5%81YNIE.pdf
+        forest_functions = {'REZ CZ': "rezerwat częściowy",
+                            'GOSP': "lasy gospodarcze",
+                            'REZ Ś': "rezerwat ścisły",
+                            'OCHR': "lasy ochronne",
+                            'REZ': "rezerwat",
+                            None: "Niezdefiniowane"}
+
+        stand_structures = {'SP': "drzewostan o strukturze przerębowej",
+                            'W PIĘTR': "drzewsotan wielopiętrowy",
+                            'KO': "klasa odnowienia",
+                            'W PIĘT': "drzewostan wielopiętrowy",
+                            '2 PIĘTR': "drzewostan dwupiętrowy",
+                            '2 PIĘT': "drzewostan dwupiętrowy",
+                            'KDO': "klasa do odnowienia",
+                            'DRZEW': "drzewostan",
+                            None: "Niezdefioniowane"}
+
+        species = {
+            None: "Niezdefionowane",
+            'KL.P': "Klon",
+            'GR': "Grusza",
+            'KL.SR': "Klon",
+            'JRZ.B': "Jarzębina",
+            'LP.S': "Lipa",
+            'SO.L': "Sosna limba",
+            'TUL.A': "Tulipanowiec amerykański",
+            'CYP.G': "Cyprys",
+            'ROK': "Rokitnik",
+            'DB': "Dąb",
+            'GŁG': "Głóg",
+            'OL.S': "Olsza",
+            'WIK': "Wiklina",
+            'LIG': "Ligustr",
+            'JB': "Jabłoń",
+            'ŚW.K': "Świerk",
+            'JAŁ': "Jałowiec",
+            'DG': "Daglezja",
+            'TAW.WB': "Tawuła",
+            'TRZ': "Trzmielina",
+            'MD': "Modrzew",
+            'KAL.K': "Kalina",
+            'JS': "Jesion",
+            'PRZ.C': "Przeorzech",
+            'WB': "Wierzba",
+            'WIŚ': "Wiśnia",
+            'TAW.DE': "Tawuła",
+            'DB.BU': "Dąb",
+            'LIL': "Liliak",
+            'ŚW.CZ': "Świerk",
+            'KAR.S': "Karagana syberyjska",
+            'SO.W': "Sosna",
+            'IWA': "Wierzba",
+            'DB.SZ': "Dąb",
+            'DB.C': "Dąb czerwony",
+            'WZ.S': "Wiąz",
+            'ORZ.C': "Orzech",
+            'JRZ': "Jarzębina",
+            'LP': "Lipa",
+            'JD.O': "Jodła",
+            'SO': "Sosna",
+            'GB': "Grab",
+            'KT': "Klon katarski",
+            'RÓŻ.D': "Róża Dzika",
+            'JKL': "Klon jesionolisty",
+            'BER': "Berberys",
+            'ŚW.SR': "Świerk",
+            'JS.P': "Jesion",
+            'ŚW.KB': "Świerk",
+            'ŚW.S': "Świerk",
+            'ŚNG.B': "Śnieguliczka biała",
+            'ŚW': "Świerk",
+            'DER.B': "Dereń",
+            'PLA.K': "platan klonolistny",
+            'SCH': "Suchodrzew pospolity",
+            'TS.K': "Choina Kanadyjska",
+            'BRZ.O': "Brzoza omszona",
+            'WB.K': "Wierzba",
+            'ŚL': "Śliwa",
+            'PK': "Pęcherznica",
+            'OS': "Osika",
+            'JD.KS': "Jodła",
+            'KRU': "Kruszyna",
+            'JD': "Jodła",
+            'TP.K': "Topola",
+            'SO.K': "Sosna kosodrzewina",
+            'PGW': "Pigwa właściwa",
+            'BEZ.K': "Bez",
+            'ŻYW.Z': "Żywotnik zachodni",
+            'JRZ.S': "Jarząb",
+            'OL': "Olsza czarna",
+            'WZ': "Wiąz",
+            'CZM.P': "Czeremcha",
+            'CZR.P': "Czereśnia",
+            'CZR': "Czereśnia",
+            'ŻYW.O': "Żywotnik olbrzymi",
+            'ŻYW.W': "Żywotnik wschodni",
+            'ŚL.T': "Śliwa tarnina",
+            'DB.S': "Dąb szypułkowy",
+            'WB.NO': "Wierzba",
+            'DER.Ś': "Dereń świdwa",
+            'MW': "Morwa",
+            'DB.B': "Dąb bezszypułkowy",
+            'CYP.L': "Cyprys",
+            'BK': "Buk",
+            'JD.K': "Jodła",
+            'LSZ': "Leszczyna",
+            'MAG.P': "Magnolia",
+            'OSZ.P': "Orzesznik",
+            'SZK': "Skrzydłorzech",
+            'ARO.C': "Aronia czarna",
+            'JS.A': "Jesion",
+            'TP.C': "Topola",
+            'ŚL.A': "Śliwa",
+            'JW': "Jawor",
+            'ŚW.SE': "Świerk",
+            'BRZ': "Brzoza",
+            'CIS': "Cis",
+            'CZM': "Czeremcha",
+            'SO.C': "Sosna czarna",
+            'JD.J': "Jodła",
+            'TP': "Topola",
+            'SO.S': "Sosna smołowa",
+            'PRZ.CW': "Przeorzech",
+            'KL': "Klon",
+            'SO.BL': "Sosna",
+            'BST': "Wiąz górski",
+            'BEZ.C': "Bez czarny",
+            'TRZ.B': "Trzmielina",
+            'DB.D': "Dąb",
+            'SO.B': "Sosna banksa",
+            'ORZ.W': "Orzech",
+            'SO.WE': "Sosna wejmutka",
+            'KSZ': "Kasztanowiec",
+            'ŚW.B': "Świerk",
+            'AK': "Akacja"
+        }
+
+        return {}
+
+    @property
     def sector_name(self):
         return self.__sector_name
 
     @property
     def geometry(self):
         return self.__geometry
+
+    def get_coordinates(self) -> Dict[str, float]:
+        n_coords = [point[1] for point in self.__geometry]
+        e_coords = [point[0] for point in self.__geometry]
+
+        n: float = (min(n_coords) + max(n_coords)) / 2
+        e: float = (min(e_coords) + max(e_coords)) / 2
+        return {"N": n, "E": e}

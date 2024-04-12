@@ -75,7 +75,7 @@ class web:
         def display_sector(address: str):
             rdlp_id = int(address.split("-")[0])
             district_id = int(address.split("-")[1])
-            forestry_id = int(address.split("-")[2])
+            forestry_id = int(str(address.split("-")[2]) + str(address.split("-")[3]))
             for rdlp in self.forest.rdlp_data.values():
                 if rdlp.id == rdlp_id:
                     name = self.forest.normalize_rdlp_name(rdlp.name)
@@ -86,6 +86,7 @@ class web:
                             data["rdlp"] = rdlp.name
                             data["district"] = self.forest.district_data[f"{rdlp_id}-{district_id}"].name
                             data["forestry"] = self.forest.forestry_data[f"{rdlp_id}-{district_id}-{forestry_id}"].name
+                            data["coordinates"] = sector.get_coordinates()
                             return data
 
             return jsonify({"status": "error"})
