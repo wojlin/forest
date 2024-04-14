@@ -23,6 +23,17 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 
+
+class JsonLoader(metaclass=SingletonMeta):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def load(path: str) -> dict:
+        with open(path, 'r') as file:
+            return json.loads(file.read())
+
+
 class Fetcher(metaclass=SingletonMeta):
 
     def __init__(self):

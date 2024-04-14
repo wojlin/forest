@@ -44,9 +44,7 @@ if __name__ == "__main__":
     area_types = set()
     for sectors in forest.sectors_data.values():
         for sector in sectors:
-            area_types.add(sector.json["spiecies"])
-
-    # silvicult {'GPZ', 'GP', 'O', 'GZ', 'S', None}
+            area_types.add(sector.json["area_type"])
 
 
 
