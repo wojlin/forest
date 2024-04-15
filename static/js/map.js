@@ -110,7 +110,7 @@ function displaySector(data)
 
     let table = document.getElementById("info-table").rows;
 
-    let coords = "N" + data["coordinates"]["N"] + ", E" + data["coordinates"]["E"]
+    let coords = "N " + data["coordinates"]["N"].toString().substring(0,10) + ",<br> E " + data["coordinates"]["E"].toString().substring(0,10)
 
     table[0].cells[1].innerHTML = title(data["rdlp"]);
     table[1].cells[1].innerHTML = title(data["district"]);

@@ -1,1 +1,8 @@
-{'GPZ', 'GP', 'O', 'GZ', 'S', None}
+{
+  "GPZ": "Zrębowo-przerębowo lasy gospodarcze",
+  "GP": "Przerębowe lasy gospodarcze",
+  "O": "Lasy ochronne",
+  "GZ": "Zrębowe-lasy gospodarcze",
+  "S": "Specjalne",
+  "None": "Niezdefiniowane"
+}

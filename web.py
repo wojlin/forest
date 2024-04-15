@@ -82,7 +82,7 @@ class web:
                     sectors = self.forest.sectors_data[name]
                     for sector in sectors:
                         if sector.address == address:
-                            data = sector.json
+                            data = sector.pretty_json
                             data["rdlp"] = rdlp.name
                             data["district"] = self.forest.district_data[f"{rdlp_id}-{district_id}"].name
                             data["forestry"] = self.forest.forestry_data[f"{rdlp_id}-{district_id}-{forestry_id}"].name
