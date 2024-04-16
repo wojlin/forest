@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 from forest_data import ForestData
-
+from utils import JsonLoader
 
 class web:
     def __init__(self, forest):
@@ -9,7 +9,8 @@ class web:
         self.app = Flask("forest")
         self.setup_routes()
 
-        self.app.run(host="localhost", port=2137, debug=False)
+        config = JsonLoader.load("configs/app.json")
+        self.app.run(host=config["host"], port=config["port"], debug=False)
 
     def setup_routes(self):
         @self.app.route('/')
