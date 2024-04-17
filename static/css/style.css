@@ -23,7 +23,38 @@
     z-index: 1;
 }
 
+#map-control
+{
+    position: absolute;
+    right: 1vh;
+    bottom:2vh;
+    height:16vh;
+    width:8vh;
+    z-index:100;
+}
 
+#zoom-in, #zoom-out
+{
+    background: url('/static/images/ribbon5.png');
+    width:8vh;
+    height:8vh;
+    color: black;
+    line-height: 8vh;
+    font-size: 5vh;
+    border: none;
+    box-shadow:none;
+    cursor:pointer;
+    transition: all 0.1s;
+    opacity:1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+#zoom-in:hover, #zoom-out:hover
+{
+    opacity:0.7;
+}
 
 .overlay {
 	position: absolute;
@@ -255,4 +286,68 @@ text-align: left;
 
 .text-text {
   fill: black;
+}
+
+
+
+
+
+
+#map-filters
+{
+position:absolute:
+right:1vh;
+top:1vh;
+z-index:100;
+}
+
+#toggle-filters
+{
+    background: url('/static/images/ribbon5.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 8vh;
+    height:8vh;
+    transform:scale(1);
+    transition: all 0.2s;
+    opacity:1;
+    z-index:100;
+    box-shadow: none;
+    position:absolute;
+    right:1vh;
+    top:1vh;
+    margin:0;
+    padding:0;
+    border: none;
+    outline: none;
+}
+
+#toggle-filters:hover
+{
+    opacity:0.7;
+}
+
+#toggle-filters > img
+{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    border:none;
+}
+
+#filters-panel
+{
+    background-image: url('/static/images/scroll.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width:30vh;
+    height:40vh;
+    position:absolute;
+    right:0vh;
+    top:8vh;
+    z-index:100;
+    display: none;
 }

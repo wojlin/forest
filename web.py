@@ -91,3 +91,20 @@ class web:
                             return data
 
             return jsonify({"status": "error"})
+
+        @self.app.route('/get_filters')
+        def get_filters():
+            area_types = JsonLoader().load("configs/area_types.json")
+            forest_functions = JsonLoader().load("configs/forest_functions.json")
+            silvicults = JsonLoader().load("configs/silvicult.json")
+            site_types = JsonLoader().load("configs/site_types.json")
+            species = JsonLoader().load("configs/species.json")
+
+            filters = {}
+            filters["species"] = species
+            filters["site_types"] = site_types
+            filters["silvicults"] = silvicults
+            filters["forest_functions"] = forest_functions
+            filters["area_types"] = area_types
+
+            return jsonify(filters)

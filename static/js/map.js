@@ -7,10 +7,6 @@ L.tileLayer('https://tile-c.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
 
 map.zoomControl.remove();
 
-L.control.zoom({
-    position: 'bottomright'
-}).addTo(map);
-
 var overlay = L.DomUtil.create('div', 'overlay', map.getPane('overlayPane'));
 overlay.style.position = 'absolute';
 overlay.style.width = '100%';
@@ -469,5 +465,44 @@ function clearMap() {
 }
 
 
+var filterState = false;
+
+function toggleFilters()
+{
+    if(!filterState)
+    {
+        filterState = true;
+        get("/get_filters", drawFilters);
+    }
+    else
+    {
+        filterState = false;
+        document.getElementById("filters-panel").style.display = "none";
+    }
+
+}
+
+function drawFilters(filters)
+{
+    filters = JSON.parse(filters);
+    console.log(filters);
+    document.getElementById("filters-panel").style.display = "block";
+
+    let box = document.createElement("div");
+
+    for (const [key, value] of Object.entries(filters))
+    {
+        let group = document.createElement('div');
+        let groupName = document.createElement('p');
+        groupName.innerHTML = key;
+        group.appendChild(groupName);
+        box.appendChild(group);
+    }
+
+    document.getElementById("filters-panel").appendChild(box);
+
+}
+
 get("/get_rdlp", drawRDLP);
 
+document.querySelector('[title="A JavaScript library for interactive maps"]').style.display = "none";
