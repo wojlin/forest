@@ -7,3 +7,4 @@ database/district/*.geo
 database/forestry/*.geo
 database/sector/*.json
 forest.log
+*.log

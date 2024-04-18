@@ -1,5 +1,5 @@
 var map = L.map('map').setView([52, 19.0], 7);
-
+var filtersList = []
 
 L.tileLayer('https://tile-c.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
     attribution: 'made by Wojciech Linowski'
@@ -484,11 +484,9 @@ function toggleFilters()
 
 function toggleGroup(element)
 {
-    console.log(element);
 
     if(element.dataset.state == "show")
     {
-        console.log("hide");
         let id = element.id.split('-')[0] + "-content";
         let content = document.getElementById(id);
         content.style.display = "none";
@@ -498,7 +496,6 @@ function toggleGroup(element)
     }
     else
     {
-        console.log('hide');
         let id = element.id.split('-')[0] + "-content";
         let content = document.getElementById(id);
         content.style.display = "block";
@@ -509,6 +506,36 @@ function toggleGroup(element)
     }
 }
 
+function selectAll()
+{
+    console.log("all filters selected!");
+    let checkboxes = document.getElementsByClassName("checkbox");
+    for(let i = 0; i < checkboxes.length; i++)
+    {
+        checkboxes[i].checked = true;
+    }
+}
+
+function deselectAll()
+{
+    console.log("all filters deselected!");
+    let checkboxes = document.getElementsByClassName("checkbox");
+    for(let i = 0; i < checkboxes.length; i++)
+    {
+        checkboxes[i].checked = false;
+    }
+}
+
+function applyFilters()
+{
+    console.log("filters applied!");
+
+    for(let i = 0; i < filtersList.length; i++)
+    {
+        console.log(filtersList[i]);
+    }
+}
+
 function drawFilters(filters)
 {
     filters = JSON.parse(filters);
@@ -516,7 +543,7 @@ function drawFilters(filters)
     document.getElementById("filters-panel").style.display = "block";
 
     let box = document.createElement("div");
-    box.classList.add('filter-box');
+    box.id = 'filter-box';
 
     for (const [key, value] of Object.entries(filters))
     {
@@ -527,7 +554,31 @@ function drawFilters(filters)
         groupRibbon.onclick = function() { toggleGroup(groupRibbon); };
         let groupName = document.createElement('p');
         groupName.classList.add('filter-group-title');
-        groupName.innerHTML = key;
+
+        let newKey = "";
+
+        if(key == "species")
+        {
+            newKey = "gatunki";
+        }
+        else if(key == "site_types")
+        {
+            newKey = "typ siedliskowy";
+        }
+        else if(key == "silvicults")
+        {
+            newKey = "rodzaj lasu";
+        }
+        else if(key == "forest_functions")
+        {
+            newKey = "funkcja lasu";
+        }
+        else if(key == "area_types")
+        {
+            newKey = "rodzaj powierzchni";
+        }
+
+        groupName.innerHTML = newKey;
 
         let groupExpand = document.createElement('div');
         groupExpand.classList.add("groupExpand");
@@ -566,6 +617,7 @@ function drawFilters(filters)
             check.id=value;
             check.classList.add("checkbox");
             check.checked = true;
+            filtersList.push(check);
 
             entryNameBox.appendChild(entryName);
             entry.appendChild(entryNameBox);
@@ -581,7 +633,11 @@ function drawFilters(filters)
 
     }
 
-    document.getElementById("filters-panel").innerHTML = "";
+    if(document.getElementById("filters-box"))
+    {
+        document.getElementById("filters-box").innerHTML = "";
+    }
+
     document.getElementById("filters-panel").appendChild(box);
 
 }

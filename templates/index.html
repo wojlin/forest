@@ -18,7 +18,13 @@
 
     <div id="map-filters">
         <button onclick="toggleFilters();" id="toggle-filters"><img src="/static/images/filters.png"/></button>
-        <div id="filters-panel"></div>
+        <div id="filters-panel">
+            <div id="filters-buttons">
+                <button onclick="applyFilters();" class="filters-select" >zastosuj</button>
+                <button onclick="selectAll();" class="filters-select" >zaznacz wszystkie</button>
+                <button onclick="deselectAll();" class="filters-select" >odznacz wszystkie</button>
+            </div>
+        </div>
     </div>
 
     <div id="map-control">

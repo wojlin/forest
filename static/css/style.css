@@ -1,3 +1,8 @@
+:root {
+  --button-size: 6vh;
+}
+
+
 @font-face {
   font-family: 'medieval';
   src: url('/static/fonts/medieval.otf');
@@ -36,8 +41,8 @@
 #zoom-in, #zoom-out
 {
     background: url('/static/images/ribbon5.png');
-    width:6vh;
-    height:6vh;
+    width:var(--button-size);
+    height:var(--button-size);
     color: black;
     line-height: 6vh;
     font-size: 4vh;
@@ -307,8 +312,8 @@ z-index:100;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    width: 8vh;
-    height:8vh;
+    width: var(--button-size);
+    height: var(--button-size);
     transform:scale(1);
     transition: all 0.2s;
     opacity:1;
@@ -347,7 +352,7 @@ z-index:100;
     height:80vh;
     position:absolute;
     right:0vh;
-    top:6vh;
+    top:5vh;
     z-index:100;
     display: none;
 }
@@ -355,13 +360,14 @@ z-index:100;
 .filter-ribbon
 {
     font-family: 'medieval2';
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.0);
     width:100%;
     height:3vh;
     line-height:3vh;
     font-size:3vh;
     cursor:pointer;
     position:relative;
+    border-bottom: solid 0.2vh black;
 }
 
 .groupExpand
@@ -374,12 +380,12 @@ z-index:100;
 
 }
 
-.filter-box
+#filter-box
 {
     margin:auto;
     width:60%;
-    margin-top:4vh;
-    height:70vh;
+    margin-top:1vh;
+    height:63vh;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -430,4 +436,25 @@ z-index:100;
     float:right;
     margin:0;
     margin-right:1vh;
+}
+
+#filters-buttons
+{
+    width:55%;
+    margin: auto;
+    margin-top:4vh;
+}
+
+.filters-select
+{
+    display:block;
+    width:80%;
+    margin:auto;
+    height:3vh;
+    border:solid 3px black;
+    font-family: 'medieval2';
+    font-size: 2vh;
+    border-radius: 1vh;
+    background: rgba(255,255,255,0.3);
+    margin-top:1vh;
 }
