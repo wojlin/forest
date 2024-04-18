@@ -482,23 +482,106 @@ function toggleFilters()
 
 }
 
+function toggleGroup(element)
+{
+    console.log(element);
+
+    if(element.dataset.state == "show")
+    {
+        console.log("hide");
+        let id = element.id.split('-')[0] + "-content";
+        let content = document.getElementById(id);
+        content.style.display = "none";
+        element.dataset.state = "hide";
+        let arrow = element.getElementsByClassName("groupExpand")[0];
+        arrow.innerHTML = '▼';
+    }
+    else
+    {
+        console.log('hide');
+        let id = element.id.split('-')[0] + "-content";
+        let content = document.getElementById(id);
+        content.style.display = "block";
+        element.dataset.state = "show";
+        let arrow = element.getElementsByClassName("groupExpand")[0];
+        arrow.innerHTML = '▲';
+
+    }
+}
+
 function drawFilters(filters)
 {
     filters = JSON.parse(filters);
-    console.log(filters);
+
     document.getElementById("filters-panel").style.display = "block";
 
     let box = document.createElement("div");
+    box.classList.add('filter-box');
 
     for (const [key, value] of Object.entries(filters))
     {
         let group = document.createElement('div');
+        let groupRibbon = document.createElement('div');
+        groupRibbon.id =  key + "-ribbon";
+        groupRibbon.classList.add('filter-ribbon');
+        groupRibbon.onclick = function() { toggleGroup(groupRibbon); };
         let groupName = document.createElement('p');
+        groupName.classList.add('filter-group-title');
         groupName.innerHTML = key;
-        group.appendChild(groupName);
+
+        let groupExpand = document.createElement('div');
+        groupExpand.classList.add("groupExpand");
+        groupExpand.innerHTML = "▼";
+
+
+        groupRibbon.appendChild(groupName);
+        groupRibbon.appendChild(groupExpand);
+        group.appendChild(groupRibbon);
+
+        let groupContent = document.createElement('div');
+        groupContent.id =  key + "-content";
+        groupContent.style.display = "none";
+
+        for (const [entryKey, entryValue] of Object.entries(value))
+        {
+
+            let entry = document.createElement('div');
+
+            let entryNameBox = document.createElement('div');
+            entryNameBox.classList.add("entryNameBox");
+
+            let entryName = document.createElement('span');
+            entryName.innerHTML = entryValue + ": ";
+            entryName.classList.add("entryName");
+
+            if(entryValue.length > 28)
+            {
+                entryName.classList.add("entryNameAnimation");
+            }
+
+
+            let check = document.createElement("input");
+            check.value = entryValue;
+            check.type="checkbox";
+            check.id=value;
+            check.classList.add("checkbox");
+            check.checked = true;
+
+            entryNameBox.appendChild(entryName);
+            entry.appendChild(entryNameBox);
+            entry.appendChild(check);
+            groupContent.appendChild(entry);
+
+        }
+
+        group.appendChild(groupContent);
+
         box.appendChild(group);
+
+
     }
 
+    document.getElementById("filters-panel").innerHTML = "";
     document.getElementById("filters-panel").appendChild(box);
 
 }
