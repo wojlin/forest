@@ -79,13 +79,19 @@ function go_back()
 
 }
 
-function get(url, callback)
+function get(url, callback, data="")
 {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.responseText);
     }
+
+    if(data != "")
+    {
+        url = url + "?data=" + encodeURIComponent(JSON.stringify(data));
+    }
+
     xmlHttp.open("GET", url, true); // true for asynchronous
     xmlHttp.send(null);
 }
@@ -540,7 +546,7 @@ function applyFilters()
             console.log(checkbox.id);
             let name = checkbox.id.toString().split('-');
 
-            if(!name[0] in filtersDict)
+            if(!(name[0] in filtersDict))
             {
                 filtersDict[name[0]] = [];
             }
@@ -550,6 +556,14 @@ function applyFilters()
     }
 
     console.log(filtersDict)
+
+
+    clearMap();
+    map.setView([52, 19.0], 7);
+    setRibbonName(currentName[0]);
+    get("/get_rdlp", drawRDLP, filtersDict);
+
+
 }
 
 function drawFilters(filters)

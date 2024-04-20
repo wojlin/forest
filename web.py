@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, send_from_directory
+from flask import Flask, render_template, jsonify, send_from_directory, request
 import os
 
 from forest_data import ForestData
@@ -15,6 +15,40 @@ class web:
         config = JsonLoader.load("configs/app.json")
         self.app.run(host=config["host"], port=config["port"], debug=False)
 
+    def filtered_data(self, level: int, filters: dict):
+        filters = filters['data']
+
+        rdlps = {}
+        for rdlp_name, rdlp in self.forest.rdlp_data.items():
+            for district in rdlp.children:
+                    for forestry in district.children:
+
+
+                        for i, element in enumerate(forestry.children):
+                            values = element.json
+                            print(values)
+
+                            for group_name, group in filters:
+                                for filter in group:
+                                    if(values[group_name] == filter):
+                                        rdlps[rdlp_name] = rdlp
+                                    break
+
+
+
+        return jsonify(rdlps)
+
+        if level == 0:
+            return rdlps
+        elif level == 1:
+            return districts
+        elif level == 2:
+            return forestries
+        elif level == 3:
+            return sectors
+        else:
+            raise Exception("invalid zoom level!")
+
     def setup_routes(self):
         @self.app.route('/')
         def index():
@@ -22,6 +56,12 @@ class web:
 
         @self.app.route('/get_rdlp')
         def get_rdlp():
+
+            data = request.args
+
+            if data:
+                return self.filtered_data(0, data)
+
             data = {}
             for i, element in self.forest.rdlp_data.items():
                 data[i] = element.json()
@@ -29,6 +69,12 @@ class web:
 
         @self.app.route('/get_district_from_rdlp/<rdlp_id>')
         def get_district_from_rdlp(rdlp_id: int):
+
+            data = request.args
+
+            if data:
+                return self.filtered_data(1, data)
+
             for rdlp in self.forest.rdlp_data.values():
                 if int(rdlp.id) == int(rdlp_id):
                     data = {}
@@ -41,6 +87,12 @@ class web:
 
         @self.app.route('/get_forestry_from_district/<rdlp_id>/<district_id>')
         def get_forestry_from_district(rdlp_id:int, district_id: int):
+
+            data = request.args
+
+            if data:
+                return self.filtered_data(2, data)
+
             for rdlp in self.forest.rdlp_data.values():
                 if int(rdlp.id) == int(rdlp_id):
                     for district in rdlp.children:
@@ -55,6 +107,12 @@ class web:
 
         @self.app.route('/get_sector_from_forestry/<rdlp_id>/<district_id>/<forestry_id>')
         def get_sector_from_forestry(rdlp_id: int, district_id: int, forestry_id: int):
+
+            data = request.args
+
+            if data:
+                return self.filtered_data(3, data)
+
             for rdlp in self.forest.rdlp_data.values():
                 if int(rdlp.id) == int(rdlp_id):
                     for district in rdlp.children:
